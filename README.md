@@ -15,6 +15,6 @@ Dunno yet.
 
 # Progress
 
-We're still firmly in the "bread boards taped to cardboard" stage.
+We're still firmly in the "breadboards taped to cardboards" stage.
 
-![bread board taped to cardboard](/progress.jpg)
+![breadboard taped to cardboard](/progress.jpg)
