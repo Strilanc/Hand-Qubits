@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SerialViz2.Properties {
+namespace QubitServer.Properties {
 
 
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

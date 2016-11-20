@@ -1,10 +1,10 @@
-﻿<Window x:Class="SerialViz2.MainWindow"
+﻿<Window x:Class="QubitServer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:winformchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
-        xmlns:local="clr-namespace:SerialViz2"
+        xmlns:local="clr-namespace:QubitServer"
         mc:Ignorable="d"
         Title="MainWindow" Height="513.333" Width="834.166" WindowStartupLocation="CenterScreen">
     <Grid>

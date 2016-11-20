@@ -5,53 +5,45 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media.Media3D;
 
-namespace SerialViz2 {
+namespace QubitServer {
     public partial class MainWindow : Window {
-        public MainWindow() {
-            InitializeComponent();
-            start_reading();
-
-            gyroChart.ChartAreas[0].AxisX.MajorGrid.LineWidth = 0;
-            gyroChart.ChartAreas[0].AxisY.MajorGrid.LineWidth = 0;
-            gyroChart.ChartAreas[0].AxisY.Maximum = +50;
-            gyroChart.ChartAreas[0].AxisY.Minimum = -50;
-        }
-
-        private void start_reading() {
-            var r = new SerialPort("COM3");
-            while (true) {
-                    r.BaudRate = 9600;
-                    r.DataBits = 8;
-                    r.StopBits = StopBits.Two;
-                    r.Handshake = Handshake.None;
-                    r.Parity = Parity.None;
-                try {
-                    r.Open();
-                    break;
-                } catch {
-                    continue;
-                }
-            }
-            ThreadPool.QueueUserWorkItem(xxx => {
-                r.ReadLine();
-                r.ReadLine();
-                r.ReadLine();
-                while (true) {
-                    try {
-                        var s = r.ReadLine();
-                        Application.Current.Dispatcher.Invoke(() => onReceive(s));
-                    } catch {
-                        // don't care
-                    }
-                }
-            });
-        }
-
         private Dictionary<String, int> keys = new Dictionary<string, int>();
         private RawReadings readings = new RawReadings();
         private SmoothedReadings smoothedReadings = new SmoothedReadings();
         private double readToRads = 0.008 / 11.0;
         private OperationHistory history = new OperationHistory();
+
+        public MainWindow() {
+            InitializeComponent();
+
+            gyroChart.ChartAreas[0].AxisX.MajorGrid.LineWidth = 0;
+            gyroChart.ChartAreas[0].AxisY.MajorGrid.LineWidth = 0;
+            gyroChart.ChartAreas[0].AxisY.Maximum = +50;
+            gyroChart.ChartAreas[0].AxisY.Minimum = -50;
+
+            StartReadingMotionData();
+        }
+
+        private void StartReadingMotionData() {
+            ThreadPool.QueueUserWorkItem(_ => Util.RetryForever(() => {
+                var r = new SerialPort("COM3");
+                r.BaudRate = 9600;
+                r.DataBits = 8;
+                r.StopBits = StopBits.Two;
+                r.Handshake = Handshake.None;
+                r.Parity = Parity.None;
+                r.Open();
+
+                r.ReadLine();
+                r.ReadLine();
+                r.ReadLine();
+                while (true) {
+                    var s = r.ReadLine();
+                    Application.Current.Dispatcher.Invoke(() => onReceive(s));
+                }
+            }));
+        }
+
         private void onReceive(String line) {
             var parts = line.Split(':');
             if (parts.Length != 2) {

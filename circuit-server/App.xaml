@@ -1,7 +1,7 @@
-﻿<Application x:Class="SerialViz2.App"
+﻿<Application x:Class="QubitServer.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:SerialViz2"
+             xmlns:local="clr-namespace:QubitServer"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

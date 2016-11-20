@@ -17,7 +17,15 @@ public static class Util {
         var axis = start.Cross(end);
         var angle = Math.Acos(start.Dot(end) / start.Length / end.Length);
         axis.Normalize();
-        System.Diagnostics.Debug.WriteLine(angle.ToString() + ",,,, " + axis.ToString());
         return new Quaternion(axis, angle * 180 / Math.PI);
+    }
+
+    public static void RetryForever(Action action) {
+        while (true) {
+            try {
+                action();
+            } catch {
+            }
+        }
     }
 }
