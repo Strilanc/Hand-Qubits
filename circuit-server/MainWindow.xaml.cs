@@ -90,7 +90,7 @@ namespace QubitServer {
             while (lines.Count <= i) {
                 lines.Add("");
             }
-            lines[i] = valDesc;
+            lines[i] = key + ": " + valDesc;
             readTextBlock.Text = String.Join("\n", lines);
         }
 
@@ -111,15 +111,11 @@ namespace QubitServer {
             pose.advanceSimulation(smoothed, smoothedReadings.isStable());
             history.advance(pose.pose);
 
-            showReading("readings", "reading: " + readings.ToString());
-            showReading("gyro noise",
-                (smoothedReadings.isResting() ? "stable" : "unstable") + "  " + smoothedReadings.gyroNoise);
-            showReading("calibration",
-                "bias: " + smoothedReadings.calibration.ToString());
-            showReading("corrected", "corrected: " + (readings - smoothedReadings.calibration).ToString());
-            showReading("pose-rotation",
-                String.Format("pose-rotation: {0:0} around {1:0.00}, {2:0.00}, {3:0.00}", pose.pose.Angle, pose.pose.Axis.X, pose.pose.Axis.Y, pose.pose.Axis.Z));
-            showReading("history", history.ToString());
+            showReading("reading", readings.ToString());
+            showReading("gyro noise", (smoothedReadings.isResting() ? "stable" : "unstable") + "  " + smoothedReadings.gyratingness);
+            showReading("gyro bias", smoothedReadings.calibration.gyro.ToShortString());
+            showReading("gyro corr", (readings - smoothedReadings.calibration).gyro.ToShortString());
+            showReading("ops", history.ToString());
 
             var preRotation = new Quaternion(new Vector3D(0, 1, 0), 7) * new Quaternion(new Vector3D(1, 0, 0), 90);
             var postRotation = new Quaternion(new Vector3D(0, 0, 1), -45);

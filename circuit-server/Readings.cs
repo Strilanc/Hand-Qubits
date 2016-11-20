@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Media.Media3D;
 
-struct RawReadings {
+public struct RawReadings {
     public Vector3D acc;
     public Vector3D gyro;
 
@@ -28,13 +28,9 @@ struct RawReadings {
 
     public override string ToString() {
         return String.Format(
-            "acc ({0:+0.00;-0.00}, {1:+0.00;-0.00}, {2:+0.00;-0.00}) gyro ({3:+0.00;-0.00}, {4:+0.00;-0.00}, {5:+0.00;-0.00})",
-            acc.X,
-            acc.Y,
-            acc.Z,
-            gyro.X,
-            gyro.Y,
-            gyro.Z);
+            "acc {0} gyro {1}",
+            acc.ToShortString(),
+            gyro.ToShortString());
     }
 
     public RawReadings justGyro() {
@@ -50,39 +46,42 @@ struct RawReadings {
     }
 }
 
-class SmoothedReadings {
-    public double gyroNoise = 0;
+public class SmoothedReadings {
+    public double gyratingness = 0;
     public RawReadings calibration = new RawReadings();
     private int stableReadings = 0;
 
     public bool isStable() {
-        return gyroNoise < 40;
+        return gyratingness < 40;
     }
 
     public bool isResting() {
         if (stableReadings < 100) {
-            return gyroNoise < 1;
+            return gyratingness < 1;
         }
-        if (stableReadings < 1000) {
-            return gyroNoise < 0.5;
-        }
-        return gyroNoise < 0.25;
+        return gyratingness < 0.5;
     }
 
     public RawReadings update(RawReadings readings) {
-        gyroNoise *= 0.7;
-        gyroNoise += (readings.gyro - calibration.gyro).Length;
+        gyratingness *= 0.7;
+        gyratingness += (readings.gyro - calibration.gyro).Length;
 
+        double a = 0;
+        double b = 1;
         if (isResting()) {
             stableReadings += 1;
-            double a = 0.1;
-            double b = 0.9;
-            calibration *= b;
-            calibration += readings * a;
+            a = 0.1;
+            b = 0.9;
+        } else if (gyratingness < 10) {
+            a = 0.0001;
+            b = 0.9999;
+        }
+        calibration *= b;
+        calibration += readings * a;
+
+        if (isResting()) {
             return readings.justAccel();
         }
-
         return readings - calibration.justGyro();
     }
 }
-
