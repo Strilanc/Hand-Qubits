@@ -105,7 +105,6 @@ class OperationHistory {
         var axis_err = (axis - op.axis).LengthSquared / op.axis.LengthSquared;
         var angle_err = Math.Abs(power - op.power) * 180;
         if (angle_err > 180) angle_err = Math.Abs(angle_err - 360);
-        System.Diagnostics.Debug.WriteLine(axis_err + ", " + angle_err + ", " + op);
         return axis_err < 0.1 && angle_err < 10;
     }
     public void advance(Quaternion rotation) {

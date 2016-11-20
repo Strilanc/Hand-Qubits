@@ -59,6 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Util.cs" />
     <Compile Include="Pose.cs" />
     <Compile Include="Operations.cs" />
     <Compile Include="Readings.cs" />

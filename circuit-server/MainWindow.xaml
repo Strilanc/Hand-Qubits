@@ -6,7 +6,7 @@
         xmlns:winformchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         xmlns:local="clr-namespace:SerialViz2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="513.333" Width="834.166">
+        Title="MainWindow" Height="513.333" Width="834.166" WindowStartupLocation="CenterScreen">
     <Grid>
         <Viewport3D Margin="334,0,0,0">
             <Viewport3D.Camera>
@@ -1268,7 +1268,7 @@
                                 </MeshGeometry3D>
                             </GeometryModel3D.Geometry>
                             <GeometryModel3D.Material>
-                                <DiffuseMaterial x:Name="matDiffuseMain">
+                                <DiffuseMaterial>
                                     <DiffuseMaterial.Brush>
                                         <SolidColorBrush Color="Green"/>
                                     </DiffuseMaterial.Brush>
@@ -1281,6 +1281,28 @@
                                 </Transform3DGroup>
                             </GeometryModel3D.Transform>
                         </GeometryModel3D>
+                        <GeometryModel3D>
+                            <GeometryModel3D.Geometry>
+                                <MeshGeometry3D
+                                    Positions="0 0 0  1 0 0  0 1 0  1 1 0  0 0 1  1 0 1  0 1 1  1 1 1"
+                                    TriangleIndices="2 3 1  2 1 0  7 1 3  7 5 1  6 5 7  6 4 5  6 2 0  2 0 4  2 7 3  2 6 7  0 1 5  0 5 4  0 4 6">
+                                </MeshGeometry3D>
+                            </GeometryModel3D.Geometry>
+                            <GeometryModel3D.Material>
+                                <DiffuseMaterial x:Name="matDiffuseMain">
+                                    <DiffuseMaterial.Brush>
+                                        <SolidColorBrush Color="Blue"/>
+                                    </DiffuseMaterial.Brush>
+                                </DiffuseMaterial>
+                            </GeometryModel3D.Material>
+                            <GeometryModel3D.Transform>
+                                <Transform3DGroup>
+                                    <ScaleTransform3D ScaleX="0.2" ScaleY="0.2" ScaleZ="25"/>
+                                    <TranslateTransform3D OffsetX="0" OffsetY="0" OffsetZ="0"/>
+                                    <RotateTransform3D x:Name="gravityTransform"/>
+                                </Transform3DGroup>
+                            </GeometryModel3D.Transform>
+                        </GeometryModel3D>
                     </Model3DGroup>
                 </ModelVisual3D.Content>
             </ModelVisual3D>
@@ -1288,7 +1310,7 @@
         <TextBlock x:Name="readTextBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="573" Width="816" Margin="0,35,0,-126" FontFamily="Courier New"/>
         <Button x:Name="button" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="751,10,0,0" Click="button_Click"/>
         <WindowsFormsHost x:Name="host" Height="300" Width="300" Margin="0,172,526,10">
-            <winformchart:Chart x:Name="chart1" Dock="Fill">
+            <winformchart:Chart x:Name="gyroChart" Dock="Fill">
                 <winformchart:Chart.Series>
                     <winformchart:Series ChartType="Line" Color="Red" />
                     <winformchart:Series ChartType="Line" Color="Green" />

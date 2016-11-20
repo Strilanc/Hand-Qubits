@@ -11,27 +11,34 @@ namespace SerialViz2 {
             InitializeComponent();
             start_reading();
 
-            chart1.ChartAreas[0].AxisX.MajorGrid.LineWidth = 0;
-            chart1.ChartAreas[0].AxisY.MajorGrid.LineWidth = 0;
-            chart1.ChartAreas[0].AxisY.Maximum = +50;
-            chart1.ChartAreas[0].AxisY.Minimum = -50;
+            gyroChart.ChartAreas[0].AxisX.MajorGrid.LineWidth = 0;
+            gyroChart.ChartAreas[0].AxisY.MajorGrid.LineWidth = 0;
+            gyroChart.ChartAreas[0].AxisY.Maximum = +50;
+            gyroChart.ChartAreas[0].AxisY.Minimum = -50;
         }
 
         private void start_reading() {
             var r = new SerialPort("COM3");
-            r.BaudRate = 9600;
-            r.DataBits = 8;
-            r.StopBits = StopBits.Two;
-            r.Handshake = Handshake.None;
-            r.Parity = Parity.None;
-            r.Open();
+            while (true) {
+                    r.BaudRate = 9600;
+                    r.DataBits = 8;
+                    r.StopBits = StopBits.Two;
+                    r.Handshake = Handshake.None;
+                    r.Parity = Parity.None;
+                try {
+                    r.Open();
+                    break;
+                } catch {
+                    continue;
+                }
+            }
             ThreadPool.QueueUserWorkItem(xxx => {
                 r.ReadLine();
                 r.ReadLine();
                 r.ReadLine();
                 while (true) {
-                    var s = r.ReadLine();
                     try {
+                        var s = r.ReadLine();
                         Application.Current.Dispatcher.Invoke(() => onReceive(s));
                     } catch {
                         // don't care
@@ -83,7 +90,7 @@ namespace SerialViz2 {
         }
 
         List<String> lines = new List<string>();
-        private void dataPoint(String key, String valDesc) {
+        private void showReading(String key, String valDesc) {
             if (!keys.ContainsKey(key)) {
                 keys.Add(key, keys.Count);
             }
@@ -100,32 +107,35 @@ namespace SerialViz2 {
         private void advanceSimulation() {
             var smoothed = smoothedReadings.update(readings);
             var shown = readings - smoothedReadings.calibration;
-            chart1.Series[0].Points.AddY(shown.gyro.X);
-            chart1.Series[1].Points.AddY(shown.gyro.Y);
-            chart1.Series[2].Points.AddY(shown.gyro.Z);
-            if (chart1.Series[0].Points.Count > 25) {
-                chart1.Series[0].Points.RemoveAt(0);
-                chart1.Series[1].Points.RemoveAt(0);
-                chart1.Series[2].Points.RemoveAt(0);
+            gyroChart.Series[0].Points.AddY(shown.gyro.X);
+            gyroChart.Series[1].Points.AddY(shown.gyro.Y);
+            gyroChart.Series[2].Points.AddY(shown.gyro.Z);
+            if (gyroChart.Series[0].Points.Count > 25) {
+                gyroChart.Series[0].Points.RemoveAt(0);
+                gyroChart.Series[1].Points.RemoveAt(0);
+                gyroChart.Series[2].Points.RemoveAt(0);
             }
 
             pose.advanceSimulation(smoothed, smoothedReadings.isStable());
             history.advance(pose.pose);
 
-            dataPoint("readings", "reading: " + readings.ToString());
-            dataPoint("gyro noise",
+            showReading("readings", "reading: " + readings.ToString());
+            showReading("gyro noise",
                 (smoothedReadings.isResting() ? "stable" : "unstable") + "  " + smoothedReadings.gyroNoise);
-            dataPoint("calibration",
+            showReading("calibration",
                 "bias: " + smoothedReadings.calibration.ToString());
-            dataPoint("corrected", "corrected: " + (readings - smoothedReadings.calibration).ToString());
-            dataPoint("pose-rotation",
+            showReading("corrected", "corrected: " + (readings - smoothedReadings.calibration).ToString());
+            showReading("pose-rotation",
                 String.Format("pose-rotation: {0:0} around {1:0.00}, {2:0.00}, {3:0.00}", pose.pose.Angle, pose.pose.Axis.X, pose.pose.Axis.Y, pose.pose.Axis.Z));
-            dataPoint("history",history.ToString());
+            showReading("history", history.ToString());
 
-            var baseRot = new Quaternion(new Vector3D(1, 0, 0), 90)
-                    * new Quaternion(new Vector3D(0, 1, 0), 0);
-            var baseRot2 = new Quaternion(new Vector3D(0, 0, 1), -45);
-            poseTransform.Rotation = new QuaternionRotation3D(baseRot2 * pose.pose * baseRot);
+            var preRotation = new Quaternion(new Vector3D(0, 1, 0), 7) * new Quaternion(new Vector3D(1, 0, 0), 90);
+            var postRotation = new Quaternion(new Vector3D(0, 0, 1), -45);
+            poseTransform.Rotation = new QuaternionRotation3D(postRotation * pose.pose * preRotation);
+
+            var accelUpward = new Vector3D(0, 0, 1).RotationTo(smoothed.acc);
+            var recoverUpward = pose.pose * accelUpward;
+            gravityTransform.Rotation = new QuaternionRotation3D(postRotation * recoverUpward);
         }
 
         private void button_Click(object sender, RoutedEventArgs e) {
