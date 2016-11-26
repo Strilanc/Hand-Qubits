@@ -4,14 +4,14 @@
     private int stableReadings = 0;
 
     public bool isStable() {
-        return gyratingness < 40;
+        return gyratingness < 4;
     }
 
     public bool isResting() {
-        if (stableReadings < 100) {
-            return gyratingness < 1;
+        if (stableReadings < 1000) {
+            return gyratingness < 0.1;
         }
-        return gyratingness < 0.5;
+        return gyratingness < 0.005;
     }
 
     public RawReadings update(RawReadings readings) {
@@ -22,11 +22,11 @@
         double b = 1;
         if (isResting()) {
             stableReadings += 1;
-            a = 0.1;
-            b = 0.9;
-        } else if (gyratingness < 10) {
-            a = 0.0001;
-            b = 0.9999;
+            a = 0.004;
+            b = 0.996;
+        } else if (gyratingness < 1) {
+            a = 0.000001;
+            b = 0.999999;
         }
         calibration *= b;
         calibration += readings * a;

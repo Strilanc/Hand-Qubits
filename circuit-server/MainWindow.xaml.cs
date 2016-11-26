@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.Ports;
 using System.Threading;
 using System.Windows;
@@ -7,20 +8,27 @@ using System.Windows.Media.Media3D;
 
 namespace QubitServer {
     public partial class MainWindow : Window {
+        private const double READ_TO_ACC = 0.0001;
+        private const double READ_TO_RADS = 0.000034*4;
+
         private Dictionary<String, int> keys = new Dictionary<string, int>();
-        private RawReadings readings = new RawReadings();
         private SmoothedReadings smoothedReadings = new SmoothedReadings();
-        private double readToRads = 0.008 / 11.0;
         private OperationHistory history = new OperationHistory();
+        private Stopwatch stopwatch = new Stopwatch();
+        private TimeSpan lastElapsedTime;
+        Pose pose = new Pose();
+        private int counter = 0;
 
         public MainWindow() {
             InitializeComponent();
 
             gyroChart.ChartAreas[0].AxisX.MajorGrid.LineWidth = 0;
             gyroChart.ChartAreas[0].AxisY.MajorGrid.LineWidth = 0;
-            gyroChart.ChartAreas[0].AxisY.Maximum = +50;
-            gyroChart.ChartAreas[0].AxisY.Minimum = -50;
+            gyroChart.ChartAreas[0].AxisY.Maximum = +5;
+            gyroChart.ChartAreas[0].AxisY.Minimum = -5;
 
+            stopwatch.Start();
+            lastElapsedTime = stopwatch.Elapsed;
             StartReadingMotionData();
         }
 
@@ -34,99 +42,93 @@ namespace QubitServer {
                 r.Parity = Parity.None;
                 r.Open();
 
-                r.ReadLine();
-                r.ReadLine();
-                r.ReadLine();
                 while (true) {
-                    var s = r.ReadLine();
-                    Application.Current.Dispatcher.Invoke(() => onReceive(s));
+                    var reading = readReading(r);
+                    Application.Current.Dispatcher.Invoke(() => advanceSimulation(reading));
                 }
             }));
         }
 
-        private void onReceive(String line) {
-            var parts = line.Split(':');
-            if (parts.Length != 2) {
-                return;
-            }
-            double val = 0;
-            if (!Double.TryParse(parts[1], out val)) {
-                val = 0;
+        private static Quaternion readReading(SerialPort r) {
+            // Wait for header.
+            while (r.ReadByte() != 0xA9) {
             }
 
-            var key = parts[0];
-            switch (key) {
-                case "Gyro X":
-                    val *= readToRads;
-                    readings.gyro.X = val;
-                    break;
-                case "Gyro Y":
-                    val *= readToRads;
-                    readings.gyro.Y = val;
-                    break;
-                case "Gyro Z":
-                    val *= readToRads;
-                    readings.gyro.Z = val;
-                    break;
-                case "Accel X":
-                    readings.acc.X = val;
-                    break;
-                case "Accel Y":
-                    readings.acc.Y = val;
-                    break;
-                case "Accel Z":
-                    readings.acc.Z = val;
-                    advanceSimulation();
-                    break;
-            }
+            var w = r.readFloat();
+            var x = r.readFloat();
+            var y = r.readFloat();
+            var z = r.readFloat();
+            var q = new Quaternion(x, y, z, w);
+            Debug.WriteLine(q.Axis.ToShortString() + " around " + q.Angle);
+            return q;
+
+            //var ax = r.ReadInt16() * READ_TO_ACC;
+            //var ay = r.ReadInt16() * READ_TO_ACC;
+            //var az = r.ReadInt16() * READ_TO_ACC;
+            //var gx = r.ReadInt16() * READ_TO_RADS;
+            //var gy = r.ReadInt16() * READ_TO_RADS;
+            //var gz = r.ReadInt16() * READ_TO_RADS;
+            //return new RawReadings {
+            //    acc = new Vector3D {
+            //        X = ax,
+            //        Y = ay,
+            //        Z = az
+            //    },
+            //    gyro = new Vector3D {
+            //        X = gx,
+            //        Y = gy,
+            //        Z = gz
+            //    }
+            //};
         }
 
-        List<String> lines = new List<string>();
-        private void showReading(String key, String valDesc) {
-            if (!keys.ContainsKey(key)) {
-                keys.Add(key, keys.Count);
-            }
-            var i = keys[key];
-            while (lines.Count <= i) {
-                lines.Add("");
-            }
-            lines[i] = key + ": " + valDesc;
-            readTextBlock.Text = String.Join("\n", lines);
-        }
+        Quaternion rawPose = Quaternion.Identity;
+        private void advanceSimulation(Quaternion dPose) {
+            //RawReadings readings
+            //var t = stopwatch.Elapsed;
+            //var dt = t - lastElapsedTime;
+            //lastElapsedTime = t;
+            //Debug.WriteLine(dt.TotalMilliseconds);
 
-        Pose pose = new Pose();
+            //var smoothed = smoothedReadings.update(readings);
+            //var shown = readings - smoothedReadings.calibration;
+            //counter++;
 
-        private void advanceSimulation() {
-            var smoothed = smoothedReadings.update(readings);
-            var shown = readings - smoothedReadings.calibration;
-            gyroChart.Series[0].Points.AddY(shown.gyro.X);
-            gyroChart.Series[1].Points.AddY(shown.gyro.Y);
-            gyroChart.Series[2].Points.AddY(shown.gyro.Z);
-            if (gyroChart.Series[0].Points.Count > 25) {
-                gyroChart.Series[0].Points.RemoveAt(0);
-                gyroChart.Series[1].Points.RemoveAt(0);
-                gyroChart.Series[2].Points.RemoveAt(0);
-            }
+            //pose.advanceSimulation(smoothed, smoothedReadings.isStable());
+            //history.advance(pose.pose);
+            rawPose *= dPose;
 
-            pose.advanceSimulation(smoothed, smoothedReadings.isStable());
-            history.advance(pose.pose);
+            //if (counter % 10 == 0) {
+            //    gyroChart.Series[0].Points.AddY(shown.gyro.X);
+            //    gyroChart.Series[1].Points.AddY(shown.gyro.Y);
+            //    gyroChart.Series[2].Points.AddY(shown.gyro.Z);
+            //    if (gyroChart.Series[0].Points.Count > 100) {
+            //        gyroChart.Series[0].Points.RemoveAt(0);
+            //        gyroChart.Series[1].Points.RemoveAt(0);
+            //        gyroChart.Series[2].Points.RemoveAt(0);
+            //    }
 
-            showReading("reading", readings.ToString());
-            showReading("gyro noise", (smoothedReadings.isResting() ? "stable" : "unstable") + "  " + smoothedReadings.gyratingness);
-            showReading("gyro bias", smoothedReadings.calibration.gyro.ToShortString());
-            showReading("gyro corr", (readings - smoothedReadings.calibration).gyro.ToShortString());
-            showReading("ops", history.ToString());
+            //    readTextBlock.Text = String.Join("\n", new String[] {
+            //        "reading: " + readings.ToString(),
+            //        "gyro noise: " + (smoothedReadings.isResting() ? "stable" : "unstable") + "  " + smoothedReadings.gyratingness,
+            //        "gyro bias: " + smoothedReadings.calibration.gyro.ToShortString(),
+            //        "gyro corr: " + (readings - smoothedReadings.calibration).gyro.ToShortString(),
+            //        "ops: " + history.ToString()
+            //    });
+            //}
 
+            var p = rawPose;
             var preRotation = new Quaternion(new Vector3D(0, 1, 0), 7) * new Quaternion(new Vector3D(1, 0, 0), 90);
             var postRotation = new Quaternion(new Vector3D(0, 0, 1), -45);
-            poseTransform.Rotation = new QuaternionRotation3D(postRotation * pose.pose * preRotation);
+            poseTransform.Rotation = new QuaternionRotation3D(postRotation * p * preRotation);
 
-            var accelUpward = new Vector3D(0, 0, 1).RotationTo(smoothed.acc);
-            var recoverUpward = pose.pose * accelUpward;
-            gravityTransform.Rotation = new QuaternionRotation3D(postRotation * recoverUpward);
+            //var accelUpward = new Vector3D(0, 0, 1).RotationTo(smoothed.acc);
+            //var recoverUpward = pose.pose * accelUpward;
+            //gravityTransform.Rotation = new QuaternionRotation3D(postRotation * recoverUpward);
         }
 
         private void button_Click(object sender, RoutedEventArgs e) {
+            rawPose = Quaternion.Identity;
             pose.pose = Quaternion.Identity;
             history = new OperationHistory();
         }

@@ -18,16 +18,15 @@ class Pose {
 
         m = Matrix3D.Identity;
         var p = pose;
-        //p.Conjugate();
         m.Rotate(p);
         var acc = readings.acc;
         acc = m.Transform(acc);
 
         var torque = new Vector3D(0, 0, -1).Cross(acc);
-        var t = torque.Length * 10;
+        var t = torque.Length / 10;
         torque.Normalize();
         if (isResting && t > 0) {
-            pose = new Quaternion(torque, t) * pose;
+            //pose = new Quaternion(torque, t) * pose;
         }
     }
 }

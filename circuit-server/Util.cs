@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO.Ports;
 using System.Windows.Media.Media3D;
 
 public static class Util {
@@ -21,7 +22,7 @@ public static class Util {
     }
 
     public static String ToShortString(this Vector3D v) {
-        return String.Format("<{0:+0.00;-0.00}, {1:+0.00;-0.00}, {2:+0.00;-0.00}>", v.X, v.Y, v.Z);
+        return String.Format("<{0:+0.0000;-0.0000}, {1:+0.0000;-0.0000}, {2:+0.0000;-0.0000}>", v.X, v.Y, v.Z);
     }
 
     public static void RetryForever(Action action) {
@@ -29,6 +30,26 @@ public static class Util {
             try {
                 action();
             } catch {
+            }
+        }
+    }
+
+    public static float readFloat(this SerialPort r) {
+        checked {
+            byte a = (byte)r.ReadByte();
+            byte b = (byte)r.ReadByte();
+            byte c = (byte)r.ReadByte();
+            byte d = (byte)r.ReadByte();
+            return new System.IO.BinaryReader(new System.IO.MemoryStream(new[] { a, b, c, d })).ReadSingle();
+        }
+    }
+
+    public static Int16 ReadInt16(this SerialPort r) {
+        checked {
+            byte a = (byte)r.ReadByte();
+            byte b = (byte)r.ReadByte();
+            unchecked {
+                return (short)((b << 8) | a);
             }
         }
     }
