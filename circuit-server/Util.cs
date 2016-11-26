@@ -29,7 +29,8 @@ public static class Util {
         while (true) {
             try {
                 action();
-            } catch {
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(ex);
             }
         }
     }

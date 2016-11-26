@@ -63,6 +63,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Bluetooth.cs" />
     <Compile Include="SmoothedReadings.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Pose.cs" />

@@ -29,12 +29,28 @@ namespace QubitServer {
 
             stopwatch.Start();
             lastElapsedTime = stopwatch.Elapsed;
-            StartReadingMotionData();
+            StartReadingMotionDataBluetooth();
+            //StartReadingMotionDataSerial();
         }
 
-        private void StartReadingMotionData() {
+        private void StartReadingMotionDataBluetooth() {
             ThreadPool.QueueUserWorkItem(_ => Util.RetryForever(() => {
-                var r = new SerialPort("COM3");
+                var b = new Bluetooth();
+                b.init();
+
+                while (true) {
+                    var reading = b.readReading();
+                    Application.Current.Dispatcher.Invoke(() => advanceSimulation(reading));
+                }
+            }));
+        }
+
+        private void StartReadingMotionDataSerial() {
+            var b = new Bluetooth();
+            b.init();
+
+            ThreadPool.QueueUserWorkItem(_ => Util.RetryForever(() => {
+                var r = new SerialPort("COM4");
                 r.BaudRate = 9600;
                 r.DataBits = 8;
                 r.StopBits = StopBits.Two;
@@ -84,6 +100,9 @@ namespace QubitServer {
 
         Quaternion rawPose = Quaternion.Identity;
         private void advanceSimulation(Quaternion dPose) {
+            if (dPose != dPose) {
+                return;
+            }
             //RawReadings readings
             //var t = stopwatch.Elapsed;
             //var dt = t - lastElapsedTime;
