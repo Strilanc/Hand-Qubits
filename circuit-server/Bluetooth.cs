@@ -17,18 +17,21 @@ class Bluetooth {
     private BluetoothClient localClient;
     private System.IO.BinaryReader reader;
 
-    public void init() {
+    public static BluetoothDeviceInfo[] discoverDevices() {
+        var c = new BluetoothClient();
+        var devices = c.DiscoverDevices();
+        return devices.Where(e => e.DeviceName == "HC-06").ToArray();
+    }
+
+    public void init(BluetoothAddress address) {
+        if (localClient != null) {
+            localClient.Dispose();
+        }
         localClient = new BluetoothClient();
-        //var devices = localClient.DiscoverDevices();
-        //var hcDevices = devices.Where(e => e.DeviceName == "HC-06").ToArray();
-        //var device = devices.First(e => e.DeviceName == "HC-06");
-
-        var address1 = new BluetoothAddress(new byte[] { 0xBC, 0x53, 0x70, 0x32, 0xD3, 0x98, 0, 0 });
-        var address2 = new BluetoothAddress(new byte[] { 0x9D, 0x53, 0x90, 0x34, 0xD3, 0x98, 0, 0 });
-
-        //BluetoothSecurity.PairRequest(address2, "1234");
-
-        var endpoint = new BluetoothEndPoint(address1, BluetoothService.SerialPort);
+        if (!BluetoothSecurity.PairRequest(address, "1234")) {
+            throw new System.IO.IOException("pairing refused");
+        }
+        var endpoint = new BluetoothEndPoint(address, BluetoothService.SerialPort);
         localClient.Client.ReceiveTimeout = (int) TimeSpan.FromSeconds(5).TotalMilliseconds;
         localClient.Connect(endpoint);
         reader = new System.IO.BinaryReader(localClient.GetStream());
