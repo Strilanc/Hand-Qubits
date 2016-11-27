@@ -1,21 +1,21 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
-using System.Diagnostics;
 using System.Windows.Media.Media3D;
 using InTheHand.Net.Bluetooth;
-using InTheHand.Net.Ports;
 using InTheHand.Net.Sockets;
-using InTheHand.Net.Mime;
-using InTheHand.Net.IrDA;
-using InTheHand.Net.Bluetooth.AttributeIds;
-using InTheHand.Net.Bluetooth.Factory;
-using InTheHand.Net.Bluetooth.Msft;
-using InTheHand.Net.Bluetooth.Widcomm;
 using InTheHand.Net;
 
-class Bluetooth {
+class MotionSourceBluetooth : MotionSource {
     private BluetoothClient localClient;
-    private System.IO.BinaryReader reader;
+    private BinaryReader reader;
+    private readonly BluetoothAddress address;
+    private readonly string pin;
+
+    public MotionSourceBluetooth(BluetoothAddress address, string pin = "1234") {
+        this.address = address;
+        this.pin = pin;
+    }
 
     public static BluetoothDeviceInfo[] discoverDevices() {
         var c = new BluetoothClient();
@@ -23,21 +23,21 @@ class Bluetooth {
         return devices.Where(e => e.DeviceName == "HC-06").ToArray();
     }
 
-    public void init(BluetoothAddress address) {
+    public void init() {
         if (localClient != null) {
             localClient.Dispose();
         }
         localClient = new BluetoothClient();
-        if (!BluetoothSecurity.PairRequest(address, "1234")) {
-            throw new System.IO.IOException("pairing refused");
-        }
+        //if (!BluetoothSecurity.PairRequest(address, pin)) {
+        //    throw new IOException("pairing refused");
+        //}
         var endpoint = new BluetoothEndPoint(address, BluetoothService.SerialPort);
         localClient.Client.ReceiveTimeout = (int) TimeSpan.FromSeconds(5).TotalMilliseconds;
         localClient.Connect(endpoint);
-        reader = new System.IO.BinaryReader(localClient.GetStream());
+        reader = new BinaryReader(new BufferedStream(localClient.GetStream()));
     }
 
-    public Quaternion readReading() {
+    public MotionSourceReading nextReading() {
         // Wait for header.
         while (reader.ReadByte() != 0xA9) {
         }
@@ -47,8 +47,12 @@ class Bluetooth {
         var y = reader.ReadSingle();
         var z = reader.ReadSingle();
         var q = new Quaternion(x, y, z, w);
-        Debug.WriteLine(q.Axis.ToShortString() + " around " + q.Angle);
-        return q;
+
+        var gx = reader.ReadSingle();
+        var gy = reader.ReadSingle();
+        var gz = reader.ReadSingle();
+        var up = new Vector3D(gx, gy, gz);
+
+        return new MotionSourceReading { deltaRotation = q, upward = up }; ;
     }
 }
-

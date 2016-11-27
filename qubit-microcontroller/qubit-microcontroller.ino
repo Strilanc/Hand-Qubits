@@ -38,8 +38,8 @@ void setupMPU(){
   mpuSendPair(REG_GYRO_RANGE, FLAG_GYRO_RANGE_DEG_PER_SEC_1000);
 
   //Accessing the register 1C - Acccelerometer Configuration (Sec. 4.5) 
-  //Setting the accel to +/- 2g
-  mpuSendPair(0x1C, 0);
+  //Setting the accel to +/- 16g
+  mpuSendPair(0x1C, 0x18);
 }
 
 void mpuRequest(int reg, int len, int* dst) {
@@ -128,14 +128,30 @@ Quaternion readNextGyroQuaternion() {
   return Quaternion::from_angular_impulse(v.x * dw, v.y * dw, v.z * dw);
 }
 
+float bumpiness;
+vec3 readNextAccel() {
+  vec3 v = mpuRequestAccel();
+  float f = 16.0 / 256.0 / 128.0;
+  v.x *= f;
+  v.y *= f;
+  v.z *= f;
+  bumpiness += v.x*v.x + v.y*v.y + v.z*v.z;
+  return v;
+}
+
 Quaternion pose;
 void loop() {
+  bumpiness = 0;
   pose = Quaternion { 1, 0, 0, 0 };
   for (int i = 0; i < 100; i++) {
     pose = pose * readNextGyroQuaternion();
+    readNextAccel();
   }
   
   Serial.write(0xA9);
   serialWriteQuaternion(pose);
+  serialWriteFloat(bumpiness);
+  serialWriteFloat(0);
+  serialWriteFloat(0);
 }
 

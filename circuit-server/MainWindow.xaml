@@ -1307,14 +1307,27 @@
                 </ModelVisual3D.Content>
             </ModelVisual3D>
         </Viewport3D>
-        <TextBlock x:Name="readTextBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="132" Width="391" Margin="0,35,0,0" FontFamily="Courier New"/>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="751,10,0,0" Click="button_Click"/>
-        <WindowsFormsHost x:Name="host" Height="300" Width="300" Margin="0,172,526,10">
-            <winformchart:Chart x:Name="gyroChart" Dock="Fill">
+        <Button x:Name="button" Content="Reset" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="751,10,0,0" Click="button_Click"/>
+        <WindowsFormsHost Margin="0,10,484,239">
+            <winformchart:Chart x:Name="motionChart1" Dock="Fill">
                 <winformchart:Chart.Series>
-                    <winformchart:Series ChartType="Line" Color="Red" />
-                    <winformchart:Series ChartType="Line" Color="Green" />
-                    <winformchart:Series ChartType="Line" Color="Blue" />
+                    <winformchart:Series ChartType="Line" Color="Gray" />
+                    <winformchart:Series ChartType="SplineArea" Color="#808080FF" />
+                    <winformchart:Series ChartType="SplineArea" Color="#8080FF80" />
+                    <winformchart:Series ChartType="SplineArea" Color="#80FF8080" />
+                </winformchart:Chart.Series>
+                <winformchart:Chart.ChartAreas>
+                    <winformchart:ChartArea/>
+                </winformchart:Chart.ChartAreas>
+            </winformchart:Chart>
+        </WindowsFormsHost>
+        <WindowsFormsHost Margin="0,243,484,0">
+            <winformchart:Chart x:Name="motionChart2" Dock="Fill">
+                <winformchart:Chart.Series>
+                    <winformchart:Series ChartType="Line" Color="Gray" />
+                    <winformchart:Series ChartType="SplineArea" Color="#808080FF" />
+                    <winformchart:Series ChartType="SplineArea" Color="#8080FF80" />
+                    <winformchart:Series ChartType="SplineArea" Color="#80FF8080" />
                 </winformchart:Chart.Series>
                 <winformchart:Chart.ChartAreas>
                     <winformchart:ChartArea/>
