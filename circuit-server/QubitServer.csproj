@@ -63,8 +63,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="KnownBoards.cs" />
     <Compile Include="MotionDestGraph.cs" />
-    <Compile Include="SimulationState.cs" />
+    <Compile Include="BoardDescription.cs" />
+    <Compile Include="QubitMotionTracker.cs" />
     <Compile Include="MotionSourceSerial.cs" />
     <Compile Include="MotionSourceBluetooth.cs" />
     <Compile Include="MotionSource.cs" />

@@ -104,7 +104,7 @@ Quaternion readNextGyroQuaternion() {
   vec3 v = recordGyroRegisters();
   float g = v.x*v.x + v.y*v.y + v.z*v.z;
   gyration = gyration * 0.9 + g * 0.1;
-  if (gyration < 10000.0 && calibration_readings < 10000) {
+  if (gyration < 100000.0 && calibration_readings < 10000) {
     calibration_readings++;
     float a = 0.999;
     float b = 1.0 - a;

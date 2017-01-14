@@ -109,8 +109,7 @@ class OperationHistory {
     }
     public void advance(Quaternion rotation) {
         unaccountedRotation = rotation;
-        var r = accountedRotation;
-        r.Conjugate();
+        var r = accountedRotation.Conjugated();
         rotation *= r;
         unaccountedRotation = rotation;
 

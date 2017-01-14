@@ -21,8 +21,14 @@ public static class Util {
         return new Quaternion(axis, angle * 180 / Math.PI);
     }
 
-    public static String ToShortString(this Vector3D v) {
-        return String.Format("<{0:+0.0000;-0.0000}, {1:+0.0000;-0.0000}, {2:+0.0000;-0.0000}>", v.X, v.Y, v.Z);
+    public static Quaternion Conjugated(this Quaternion q) {
+        Quaternion t = q;
+        t.Conjugate();
+        return t;
+    }
+
+    public static string ToShortString(this Vector3D v) {
+        return string.Format("<{0:+0.0000;-0.0000}, {1:+0.0000;-0.0000}, {2:+0.0000;-0.0000}>", v.X, v.Y, v.Z);
     }
 
     public static void RetryForever(Action action) {
@@ -45,7 +51,7 @@ public static class Util {
         }
     }
 
-    public static Int16 ReadInt16(this SerialPort r) {
+    public static short ReadInt16(this SerialPort r) {
         checked {
             byte a = (byte)r.ReadByte();
             byte b = (byte)r.ReadByte();

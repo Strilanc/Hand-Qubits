@@ -3,21 +3,17 @@ using System.Windows.Media.Media3D;
 using InTheHand.Net;
 
 class QubitMotionTracker {
-    public readonly BluetoothAddress address;
+    public readonly BoardDescription board;
     private readonly Action<Quaternion> output;
-    private readonly Quaternion groundOrientation;
-    private readonly Quaternion preOrientation;
-    private readonly Quaternion postOrientation;
     private readonly MotionDestGraph graph;
     private Quaternion pose = Quaternion.Identity;
 
-    public QubitMotionTracker(BluetoothAddress address, MotionDestGraph graph, Action<Quaternion> output, Quaternion groundOrientation, Quaternion preOrientation, Quaternion postOrientation) {
-        this.address = address;
+    public QubitMotionTracker(BoardDescription board, MotionDestGraph graph, Action<Quaternion> output) {
+        this.board = board;
         this.graph = graph;
         this.output = output;
-        this.groundOrientation = groundOrientation;
-        this.preOrientation = preOrientation;
-        this.postOrientation = postOrientation;
+
+        output(Quaternion.Identity);
     }
 
     public void advanceSimulation(MotionSourceReading reading) {
@@ -25,16 +21,14 @@ class QubitMotionTracker {
         if (double.IsNaN(dPose.W) || double.IsNaN(dPose.X) || double.IsNaN(dPose.Y) || double.IsNaN(dPose.Z)) {
             return;
         }
-
-        var groundOrientation = this.groundOrientation;
-        var counterRotation = groundOrientation;
-        counterRotation.Conjugate();
-        dPose = groundOrientation * dPose * counterRotation;
+        
+        // Switch from accelerometer coordinates to board coordinates.
+        dPose = board.motionOrientation * dPose * board.motionOrientation.Conjugated();
 
         pose *= dPose;
         pose.Normalize();
 
-        output(this.postOrientation * pose * this.preOrientation);
+        output(pose);
 
         graph.showReading(new MotionSourceReading { deltaRotation = dPose, upward = reading.upward });
         //var accelUpward = new Vector3D(0, 0, 1).RotationTo(smoothed.acc);
