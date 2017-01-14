@@ -15,6 +15,7 @@ Dunno yet.
 
 # Progress
 
-We're still firmly in the "breadboards taped to cardboards" stage.
+Breadboards hidden inside hollowed-out polystyrene balls, broadcasting motion data via bluetooth which is being received by the laptop.
+(The USB cable is just for power, not serial output.)
 
 ![breadboard taped to cardboard](/progress.jpg)
