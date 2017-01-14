@@ -26,6 +26,7 @@ class QubitMotionTracker {
             return;
         }
 
+        var groundOrientation = this.groundOrientation;
         var counterRotation = groundOrientation;
         counterRotation.Conjugate();
         dPose = groundOrientation * dPose * counterRotation;

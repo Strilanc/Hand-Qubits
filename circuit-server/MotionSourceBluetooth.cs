@@ -20,7 +20,7 @@ class MotionSourceBluetooth : MotionSource {
     public static BluetoothDeviceInfo[] discoverDevices() {
         var c = new BluetoothClient();
         var devices = c.DiscoverDevices();
-        return devices.Where(e => e.DeviceName == "HC-06").ToArray();
+        return devices.Where(e => e.DeviceName.StartsWith("HC-0")).ToArray();
     }
 
     public void init() {
