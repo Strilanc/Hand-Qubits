@@ -1,6 +1,7 @@
 #include <Wire.h>
 #include <math.h>
 #include "quaternion.h"
+#include "sound.h"
 
 struct vec3 {
   float x;
@@ -12,6 +13,7 @@ void setup() {
   Serial.begin(9600);
   Wire.begin();
   Wire.setClock(400000L); // max supported by MPU-6050
+  sound_setup();
   setupMPU();
 }
 
@@ -146,6 +148,7 @@ void loop() {
   for (int i = 0; i < 100; i++) {
     pose = pose * readNextGyroQuaternion();
     readNextAccel();
+    sound_loop();
   }
   
   Serial.write(0xA9);
@@ -153,5 +156,29 @@ void loop() {
   serialWriteFloat(bumpiness);
   serialWriteFloat(0);
   serialWriteFloat(0);
+
+  while (Serial.available() > 0) {
+    switch (Serial.read()) {
+      case 'r':
+        // Ring.
+        queue_tone(40, 10, 8, true);
+        break;
+
+      case 'b':
+        // Beep beep!
+        queue_tone(80, 120, 3, true);
+        break;
+
+      case 't':
+        // Tick.
+        set_ticking(true);
+        break;
+
+      case 'u':
+        // Untick.
+        set_ticking(false);
+        break;
+    }
+  }
 }
 
