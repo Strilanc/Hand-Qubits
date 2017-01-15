@@ -47,7 +47,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="common.h" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="test_coder.cpp" />
+    <ClCompile Include="test_quaternion.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

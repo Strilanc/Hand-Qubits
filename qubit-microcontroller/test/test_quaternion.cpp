@@ -1,25 +1,8 @@
 #include <stdio.h>
-#include <exception>
-#include <string>
+#include "common.h"
 #include "../quaternion.h"
 #include "../quaternion.cpp"
-#define PI 3.14159265358979323846
-
-static std::string cur_name = "";
-static int cur_assert = 0;
-
-void test(std::string name, void(*func)(void)) {
-	cur_assert = 0;
-	cur_name = name;
-	func();
-}
-
-void assert(bool truth) {
-	cur_assert++;
-	if (!truth) {
-		throw "assert in " + cur_name + " at #" + std::to_string(cur_assert);
-	}
-}
+#define PI 3.14159265358979323846f
 
 void assert_near(Quaternion q1, Quaternion q2) {
 	auto qd = q1 - q2;
@@ -27,7 +10,7 @@ void assert_near(Quaternion q1, Quaternion q2) {
 	assert(d < 0.0001);
 }
 
-int main() {
+void quaternion_main() {
 	test("quaternion_equality", [](){
 		constexpr Quaternion q{ 2, 3, 5, 7 };
 
@@ -62,6 +45,5 @@ int main() {
 		assert_near(Quaternion::from_angular_impulse(PI/2, 0, 0), Quaternion{ sqrtf(0.5), sqrtf(0.5), 0, 0 });
 	});
 
-	printf("PASS");
-	return 0;
+	printf("QUATERNION PASS\n");
 }
