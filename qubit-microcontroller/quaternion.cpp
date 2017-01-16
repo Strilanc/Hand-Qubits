@@ -2,14 +2,14 @@
 #include <math.h>
 
 Quaternion Quaternion::from_angular_impulse(float wx, float wy, float wz) {
-    float n = sqrtf(wx*wx + wy*wy + wz*wz);
+  float n = sqrtf(wx*wx + wy*wy + wz*wz);
 	if (n < 0.00001) {
 		return Quaternion{ 1, 0, 0, 0 };
 	}
-    float hangle = n / 2;
-    float c = cosf(hangle);
-    float s = sinf(hangle) / n;
-    return Quaternion{ c, s*wx, s*wy, s*wz };
+  float hangle = n / 2;
+  float c = cosf(hangle);
+  float s = sinf(hangle) / n;
+  return Quaternion{ c, s*wx, s*wy, s*wz };
 }
 
 bool Quaternion::operator==(const Quaternion& q) const {

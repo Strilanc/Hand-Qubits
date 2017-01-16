@@ -28,7 +28,7 @@ bool CodeReceiver::did_read_at(bool read_val, unsigned long read_time) {
     return false;
   }
   
-  if (did_receive || last_val == read_val) {
+  if (did_receive || last_val == read_val || buf_len >= MAX_MSG_LEN*8) {
 		return did_receive;
 	}
 
@@ -40,7 +40,7 @@ bool CodeReceiver::did_read_at(bool read_val, unsigned long read_time) {
 	}
 
 	bool val = dt > pulse_duration * 3.0 / 2.0;
-	buf[buf_len] = val;
+	buf[buf_len>>3] |= (val ? 1 : 0) << (buf_len&7);
 	buf_len++;
 	
   int msg_bit_len = message_length * 8;
@@ -50,7 +50,9 @@ bool CodeReceiver::did_read_at(bool read_val, unsigned long read_time) {
       received_buf[i] = 0;
     }
 		for (int d = 0; d < msg_bit_len; d++) {
-			received_buf[d>>3] |= (buf[d + offset] ? 1 : 0) << (d & 7);
+      int j = d + offset;
+      bool x = ((buf[j>>3]>>(j&7)) & 1) != 0;
+			received_buf[d>>3] |= (x ? 1 : 0) << (d & 7);
 		}
 		int e = message_length - 1;
     auto r = crc8(received_buf, e);
@@ -60,31 +62,44 @@ bool CodeReceiver::did_read_at(bool read_val, unsigned long read_time) {
 	return did_receive;
 }
 
+void CodeSender::append(bool b) {
+  sends[send_len>>3] |= (b?1:0)<<(send_len&7);  
+  send_len++;
+}
+
 CodeSender::CodeSender(uint8_t* msg, unsigned long pulse_duration, unsigned long message_length, unsigned long start_time) {
   this->pulse_duration = pulse_duration;
   this->start_time = start_time;
 
-  this->sends[this->send_len++] = false;
+  append(false);
+  append(false);
   bool b = true;
   for (int i = 0; i <= message_length; i++) {
     uint8_t v = i < message_length ? msg[i] : crc8(msg, message_length);
     for (int j = 0; j < 8; j++) {
       int nk = (v >> j) & 1 != 0 ? 2 : 1;
       for (int k = 0; k < nk; k++) {
-        this->sends[this->send_len++] = b;
+        append(b);
       }
       b ^= true;
     }
   }
-  this->sends[this->send_len++] = b;
+  append(b);
+  append(b);
 }
 
 bool CodeSender::value_to_write_at(unsigned long time) {
+  unsigned long n;
   if (time < start_time) {
-    return sends[0];
+    n = 0;
+  } else if (is_done_at(time)) {
+    n = send_len - 1;
+  } else {
+    n = (time - start_time) / pulse_duration;
   }
-  if (time > start_time + send_len * pulse_duration) {
-    return sends[send_len - 1];
-  }
-  return sends[(time - start_time) / pulse_duration];
+  return ((sends[n>>3]>>(n&7)) & 1) != 0;
+}
+
+bool CodeSender::is_done_at(unsigned long time) {
+  return time > start_time + send_len * pulse_duration;
 }
