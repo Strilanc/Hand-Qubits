@@ -15,7 +15,7 @@ namespace QubitServer {
             var teapotRotationAdjust = new Quaternion(new Vector3D(0, 0, 1), -45)
                 * new Quaternion(new Vector3D(1, 0, 0), 90);
             qubit1 = new QubitMotionTracker(
-                KnownBoard.Bip,
+                KnownBoard.Dask,
                 new MotionDestGraph(motionChart1),
                 q => poseTransform.Rotation = new QuaternionRotation3D(teapotRotationAdjust * q));
             qubit2 = new QubitMotionTracker(
