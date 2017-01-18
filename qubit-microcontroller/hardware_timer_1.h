@@ -1,3 +1,7 @@
+//
+// Manages one of the hardware timer interrupts.
+//
+
 #ifndef HARDWARE_TIMER_1_H
 #define HARDWARE_TIMER_1_H
 

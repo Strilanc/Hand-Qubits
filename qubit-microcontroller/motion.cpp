@@ -21,7 +21,6 @@ static float bumpiness;
 void setupMPU();
 
 void motion_setup() {
-  Serial.begin(9600);
   Wire.begin();
   Wire.setClock(400000L); // max supported by MPU-6050
   setupMPU();

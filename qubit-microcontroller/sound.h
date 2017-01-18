@@ -1,3 +1,7 @@
+//
+// Controls a piezo speaker on A3.
+//
+
 #ifndef SOUND_H
 #define SOUND_H
 

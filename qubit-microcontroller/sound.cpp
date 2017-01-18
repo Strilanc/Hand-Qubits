@@ -66,35 +66,7 @@ void sound_setup() {
   pinMode(soundPin, OUTPUT);
 }
 
-void read_any_sound_commands_from_serial() {
-  while (Serial.available() > 0) {
-    switch (Serial.read()) {
-      case 'r':
-        // Ring.
-        queue_tone(40, 10, 8, true);
-        break;
-
-      case 'b':
-        // Beep beep!
-        queue_tone(80, 120, 3, true);
-        break;
-
-      case 't':
-        // Tick.
-        set_ticking(true);
-        break;
-
-      case 'u':
-        // Untick.
-        set_ticking(false);
-        break;
-    }
-  }
-}
-
 void sound_loop() {
-  read_any_sound_commands_from_serial();
-  
   while (queue_len > 0 && peek().time <= millis()) {
     digitalWrite(soundPin, dequeue().val);
   }
@@ -105,3 +77,4 @@ void sound_loop() {
 	  digitalWrite(soundPin, LOW);
   }
 }
+
