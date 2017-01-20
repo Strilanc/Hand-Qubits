@@ -58,7 +58,7 @@ void mpuRequest(int reg, int len, int* dst) {
   Wire.write(reg);
   Wire.endTransmission();
   
-  Wire.requestFrom(mpuAddress, len*2); //Request Gyro Registers (43 - 48)
+  Wire.requestFrom(mpuAddress, len*2);
   while(Wire.available() < len*2) {
     // wait
   }
@@ -108,7 +108,10 @@ void serialWriteQuaternion(Quaternion q) {
 }
 
 Quaternion readNextGyroQuaternion() {
+  // Grab angular velocities.
   vec3 v = recordGyroRegisters();
+
+  // If still early, build up average to calibrate zero bias.
   float g = v.x*v.x + v.y*v.y + v.z*v.z;
   gyration = gyration * 0.9 + g * 0.1;
   if (gyration < 100000.0 && calibration_readings < 10000) {
@@ -123,15 +126,18 @@ Quaternion readNextGyroQuaternion() {
     bias.z += b * v.z;
   }
 
+  // Cancel out estimated bias.
   v.x -= bias.x;
   v.y -= bias.y;
   v.z -= bias.z;
 
+  // Duration to integrate over.
   unsigned long t = micros();
   int dt = (int)(t - last_gyro_read_time);
   last_gyro_read_time = t;
 
-  float dw = dt * 1000.0 * 3.14159265358979323846 / 180.0 / 1000.0 / 1000.0 / 256.0 / 128.0;
+  // Estimated rotation over sample duration.
+  float dw = dt * 3.14159265358979323846 / 180.0 / 1000.0 / 256.0 / 128.0;
   return Quaternion::from_angular_impulse(v.x * dw, v.y * dw, v.z * dw);
 }
 
@@ -156,13 +162,17 @@ void send_accumulated_motion_and_reset() {
 }
 
 void motion_loop() {
+  // Sending motion data constantly is too expensive. Build it up for 100 loops before doing that.
   if (accumulate_count >= 100) {
-	send_accumulated_motion_and_reset();
+    send_accumulated_motion_and_reset();
     accumulate_count = 0;
   }
   accumulate_count++;
 
+  // Accumulate rotations.
   pose = pose * readNextGyroQuaternion();
+
+  // Accumulate estimate of whether we're slamming into a table or not.
   vec3 v = readNextAccel();
   bumpiness += v.x*v.x + v.y*v.y + v.z*v.z;
 }
