@@ -7,8 +7,8 @@ void BitWord::enq(bool b) {
   write_pos++;
 }
 
-void BitWord::enq(uint8_t b) {
-  for (int i = 0; i < 8; i++) {
+void BitWord::enq(uint8_t b, uint8_t len = 8) {
+  for (int i = 0; i < len; i++) {
 	  enq(bitRead(b, i) != 0);
   }
 }

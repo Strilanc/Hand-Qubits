@@ -17,8 +17,8 @@ void contact_loop();
 // Set the uint8_t value to send to the other side when in contact.
 void contact_set_byte_to_send(uint8_t message_byte);
 
-// Returns -1 if not in contact, else a uint8_t value being received from the other side.
-int contact_get_current_other_message();
+// Returns 255 if not in contact, else value being received from the other side.
+uint8_t contact_get_current_other_message();
 
 #endif
 

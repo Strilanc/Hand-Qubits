@@ -4,6 +4,7 @@
 
 void setup() {
   Serial.begin(9600);
+  pinMode(13, OUTPUT);
 
   contact_setup();
   motion_setup();
@@ -16,7 +17,8 @@ void loop() {
   sound_loop();
 
   read_any_commands_from_serial();
-  set_ticking(contact_get_current_other_message() != -1);
+  set_ticking(contact_get_current_other_message() != 0xFF);
+  digitalWrite(13, contact_get_current_other_message() != 0xFF);
 }
 
 void read_any_commands_from_serial() {

@@ -15,7 +15,7 @@ private:
 
 public:
   void enq(bool b);
-  void enq(uint8_t b);
+  void enq(uint8_t b, uint8_t len = 8);
   bool deq();
   bool val(uint8_t i);
   uint8_t len();
