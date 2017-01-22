@@ -6,9 +6,9 @@
         xmlns:winformchart="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         xmlns:local="clr-namespace:QubitServer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="513.333" Width="834.166" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="524.333" Width="983.166" WindowStartupLocation="CenterScreen">
     <Grid>
-        <Viewport3D Margin="347,0,241,239">
+        <Viewport3D Margin="0,10,80,0" Grid.Column="1" HorizontalAlignment="Right" Width="238" Height="243" VerticalAlignment="Top">
             <Viewport3D.Camera>
                 <PerspectiveCamera Position="-50,50,20" LookDirection="1,-1,-0.5 " 
                          UpDirection="0,0,1" />
@@ -1307,8 +1307,8 @@
                 </ModelVisual3D.Content>
             </ModelVisual3D>
         </Viewport3D>
-        <Button x:Name="button" Content="Reset" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="751,10,0,0" Click="button_Click"/>
-        <WindowsFormsHost Margin="0,10,484,239">
+        <Button x:Name="button" Content="Reset" VerticalAlignment="Top" Margin="0,10,10,0" Click="button_Click" HorizontalAlignment="Right" Width="75"/>
+        <WindowsFormsHost Margin="0,10,318,0" Grid.ColumnSpan="2" Height="243" VerticalAlignment="Top">
             <winformchart:Chart x:Name="motionChart1" Dock="Fill">
                 <winformchart:Chart.Series>
                     <winformchart:Series ChartType="Line" Color="Gray" />
@@ -1321,7 +1321,7 @@
                 </winformchart:Chart.ChartAreas>
             </winformchart:Chart>
         </WindowsFormsHost>
-        <WindowsFormsHost Margin="0,243,484,0">
+        <WindowsFormsHost Margin="0,258,318,0" Grid.ColumnSpan="2" Height="234" VerticalAlignment="Top">
             <winformchart:Chart x:Name="motionChart2" Dock="Fill">
                 <winformchart:Chart.Series>
                     <winformchart:Series ChartType="Line" Color="Gray" />
@@ -1334,7 +1334,7 @@
                 </winformchart:Chart.ChartAreas>
             </winformchart:Chart>
         </WindowsFormsHost>
-        <Viewport3D Margin="347,243,241,0">
+        <Viewport3D Margin="0,253,80,-10" Grid.Column="1" Height="239" VerticalAlignment="Top" HorizontalAlignment="Right" Width="238">
             <Viewport3D.Camera>
                 <PerspectiveCamera Position="-50,50,20" LookDirection="1,-1,-0.5 " 
         			UpDirection="0,0,1" />

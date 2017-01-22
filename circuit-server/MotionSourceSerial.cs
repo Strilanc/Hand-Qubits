@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO.Ports;
+﻿using System.IO.Ports;
 using System.Windows.Media.Media3D;
 
 class MotionSourceSerial : MotionSource {
