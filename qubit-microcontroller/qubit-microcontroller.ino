@@ -2,9 +2,11 @@
 #include "motion.h"
 #include "sound.h"
 
+#define LED_PIN 13
+
 void setup() {
   Serial.begin(9600);
-  pinMode(13, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
 
   contact_setup();
   motion_setup();
@@ -17,8 +19,10 @@ void loop() {
   sound_loop();
 
   read_any_commands_from_serial();
-  set_ticking(contact_get_current_other_message() != 0xFF);
-  digitalWrite(13, contact_get_current_other_message() != 0xFF);
+
+  bool is_in_contact = contact_get_current_other_message() != 0xFF;
+  set_ticking(is_in_contact);
+  digitalWrite(LED_PIN, is_in_contact);
 }
 
 void read_any_commands_from_serial() {

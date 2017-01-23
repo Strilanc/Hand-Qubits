@@ -10,10 +10,10 @@
 #define DID_RECEIVE_NOW_WAITING 1
 #define SENDING 2
 
-#define MAGIC ((uint8_t)0xA)
-#define EXP_MSG_LEN 2
+#define MAGIC ((uint8_t)0xA3)
+#define EXP_MSG_LEN 3
 #define EXP_MSG_BIT_LEN (EXP_MSG_LEN*8)
-#define TICK_MICROS 1000
+#define TICK_MICROS 512
 #define SEND_TICKS ((EXP_MSG_BIT_LEN+1)*4)
 #define LISTEN_TICKS (SEND_TICKS+8)
 
@@ -52,14 +52,15 @@ void start_sending() {
   state = SENDING;
   send_queue_len = 0;
   ticks_until_next_transition = SEND_TICKS;
+  //ticks_until_next_transition = 0;
 
   // Give a bit of time to take control of voltage.
   send_bits.enq(true);
 
   // Message w/ leading magic byte and trailing crc.
-  send_bits.enq(MAGIC, 4);
-  send_bits.enq(byte_to_send, 4);
-  uint8_t dat[] {MAGIC | (byte_to_send<<4)};
+  send_bits.enq(MAGIC);
+  send_bits.enq(byte_to_send);
+  uint8_t dat[] {MAGIC, byte_to_send};
   send_bits.enq(crc8(dat, sizeof(dat)));
 }
 
@@ -67,7 +68,6 @@ void do_sending() {
   if (send_queue_len == 0) {
     // When done sending, immediately switch to listening.
     if (send_bits.len() == 0) {
-      //Serial.println(" DONE SENDING");
       start_listening(ticks_until_next_transition);
       return;
     }
@@ -75,11 +75,9 @@ void do_sending() {
     // Queue next Manchester-encoded bit.
     send_queue_len = 4;
     bool val = send_bits.deq();
-    //Serial.print(val ? "_" : "_");
     send_queue_bits = val ? 0b0011 : 0b1100;
   }
   
-  //Serial.print((send_queue_bits & 1) != 0 ? "0" : "1");
   digitalWrite(CONTACT_PIN, (send_queue_bits & 1) != 0);
   send_queue_bits >>= 1;
   send_queue_len--;
@@ -148,13 +146,13 @@ void do_listening() {
   // Does it have the right magic byte and a correct CRC?
   byte* vb = (byte*) (void*) &received_bit_mask;
   int e = EXP_MSG_LEN - 1;
-  if ((vb[0] & 0xF) != MAGIC || vb[e] != crc8(vb, e)) {
+  if (vb[0] != MAGIC || vb[e] != crc8(vb, e)) {
     return;
   }
 
   // Message received.
   state = DID_RECEIVE_NOW_WAITING;
-  last_received_message = vb[0] >> 4;
+  last_received_message = vb[1];
 
   // The sender is about to start listening, so now we know when to start sending.
   // (This line causes a lock-on effect, where the send/receive cycle rate jumps when the two agents can hear each other.)

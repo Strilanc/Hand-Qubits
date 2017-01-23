@@ -11,6 +11,7 @@ typedef struct {
 static Item queue[QUEUE_CAP];
 static int queue_start = 0;
 static int queue_len = 0;
+static unsigned long last_tick_time = 0;
 static bool is_ticking = false;
 static unsigned long next_time;
 
@@ -71,7 +72,11 @@ void sound_loop() {
     digitalWrite(soundPin, dequeue().val);
   }
   if (queue_len == 0 && is_ticking) {
-	  digitalWrite(soundPin, millis() % 500 < 5 ? HIGH : LOW);
+    unsigned long t = millis();
+    if (t > last_tick_time + 500) {
+      last_tick_time = t;
+    }
+    digitalWrite(soundPin, t < last_tick_time + 5 ? HIGH : LOW);
   }
   if (queue_len == 0 && !is_ticking) {
 	  digitalWrite(soundPin, LOW);
