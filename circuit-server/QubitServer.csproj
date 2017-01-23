@@ -39,9 +39,14 @@
       <HintPath>packages\32feet.NET.3.5.0.0\lib\net\InTheHand.Net.Personal.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml" />
@@ -71,6 +76,7 @@
     <Compile Include="MotionSourceBluetooth.cs" />
     <Compile Include="MotionSource.cs" />
     <Compile Include="SmoothedReadings.cs" />
+    <Compile Include="StateVector.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Pose.cs" />
     <Compile Include="Operations.cs" />
