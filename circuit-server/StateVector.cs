@@ -26,7 +26,7 @@ public class StateVector {
         new Complex[] { new Complex(Double.NaN, Double.NaN), 0 },
         new Complex[] { 0, 1 });
 
-    private int qubitCount;
+    public readonly int qubitCount;
     private Vector<Complex> vector;
     private Random random = new Random();
 
@@ -73,7 +73,12 @@ public class StateVector {
         }
 
         vector = operation * vector;
-        vector /= vector.Select(e => e.Real * e.Real + e.Imaginary * e.Imaginary).Sum();
+        normalize();
+    }
+
+    private void normalize() {
+        var w = vector.Select(e => e.Real * e.Real + e.Imaginary * e.Imaginary).Sum();
+        vector /= w;
     }
 
     public bool measureQubit(int target) {
@@ -85,7 +90,7 @@ public class StateVector {
                 vector[i] = 0;
             }
         }
-        vector /= vector.Select(e => e.Real * e.Real + e.Imaginary * e.Imaginary).Sum();
+        normalize();
         return result;
     }
 }

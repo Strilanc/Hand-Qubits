@@ -9,6 +9,7 @@ using InTheHand.Net;
 class MotionSourceBluetooth : MotionSource {
     private BluetoothClient localClient;
     private BinaryReader reader;
+    private BinaryWriter writer;
     private readonly BluetoothAddress address;
     private readonly string pin;
 
@@ -34,7 +35,9 @@ class MotionSourceBluetooth : MotionSource {
         var endpoint = new BluetoothEndPoint(address, BluetoothService.SerialPort);
         localClient.Client.ReceiveTimeout = (int) TimeSpan.FromSeconds(5).TotalMilliseconds;
         localClient.Connect(endpoint);
-        reader = new BinaryReader(new BufferedStream(localClient.GetStream()));
+        var stream = new BufferedStream(localClient.GetStream());
+        reader = new BinaryReader(stream);
+        writer = new BinaryWriter(stream);
     }
 
     public MotionSourceReading nextReading() {
@@ -49,10 +52,25 @@ class MotionSourceBluetooth : MotionSource {
         var q = new Quaternion(x, y, z, w);
 
         var gx = reader.ReadSingle();
-        var gy = reader.ReadSingle();
-        var gz = reader.ReadSingle();
-        var up = new Vector3D(gx, gy, gz);
+        var up = new Vector3D(gx, 0, 0);
+        var contactId = reader.ReadByte();
+        var peerContactId = reader.ReadByte();
 
-        return new MotionSourceReading { deltaRotation = q, upward = up }; ;
+        return new MotionSourceReading {
+            deltaRotation = q,
+            upward = up,
+            doMeasurement = up.Length/300 > 2,
+            contactId = contactId,
+            peerContactId = peerContactId
+        };
+    }
+
+    public void setContactId(byte id) {
+        writer.Write('m');
+        writer.Write(id);
+    }
+
+    public void reportMeasurement(bool result) {
+        writer.Write(result ? 'r' : 'b');
     }
 }

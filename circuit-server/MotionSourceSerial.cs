@@ -37,4 +37,12 @@ class MotionSourceSerial : MotionSource {
         var up = new Vector3D(gx, gy, gz);
         return new MotionSourceReading { deltaRotation = q, upward = up };
     }
+
+    public void setContactId(byte id) {
+        r.Write(new[] { (byte) 'm', id }, 0, 2);
+    }
+
+    public void reportMeasurement(bool result) {
+        r.Write(new[] { result ? 'r' : 'b'}, 0, 1);
+    }
 }

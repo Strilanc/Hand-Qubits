@@ -2,6 +2,7 @@
 #include <math.h>
 #include <Wire.h>
 
+#include "contact.h"
 #include "quaternion.h"
 
 struct vec3 {
@@ -154,8 +155,8 @@ void send_accumulated_motion_and_reset() {
   Serial.write(0xA9);
   serialWriteQuaternion(pose);
   serialWriteFloat(bumpiness);
-  serialWriteFloat(0);
-  serialWriteFloat(0);
+  Serial.write(contact_get_byte_to_send());
+  Serial.write(contact_get_current_other_message());
 
   bumpiness = 0;
   pose = Quaternion { 1, 0, 0, 0 };

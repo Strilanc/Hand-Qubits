@@ -7,6 +7,8 @@ using System.Windows.Media.Media3D;
 namespace QubitServer {
     public partial class MainWindow : Window {
         private Action buttonHandlers = () => { };
+        private byte next_id = 0;
+        private StateVector state = new StateVector(4);
 
         public MainWindow() {
             InitializeComponent();
@@ -31,16 +33,27 @@ namespace QubitServer {
 
             dumpMotionDataToGraph(
                 new MotionSourceBluetooth(qubitMotionTracker.board.address),
-                qubitMotionTracker.advanceSimulation);
+                e => qubitMotionTracker.advanceSimulation(e, state));
         }
 
-        private void dumpMotionDataToGraph(MotionSource src, Action<MotionSourceReading> dst) {
+        private void dumpMotionDataToGraph(MotionSource src, Func<MotionSourceReading, bool?> dst) {
+            var id = next_id++;
             ThreadPool.QueueUserWorkItem(_ => Util.RetryForever(() => {
                 src.init();
+                src.setContactId(id);
 
                 while (true) {
                     var reading = src.nextReading();
-                    Application.Current.Dispatcher.Invoke(() => dst(reading));
+                    if (reading.contactId != id) {
+                        src.setContactId(id);
+                        reading.contactId = id;
+                    }
+                    Application.Current.Dispatcher.Invoke(() => {
+                        var m = dst(reading);
+                        if (m.HasValue) {
+                            src.reportMeasurement(m.Value);
+                        }
+                    });
                 }
             }));
         }

@@ -18,7 +18,7 @@
 #define LISTEN_TICKS (SEND_TICKS+8)
 
 int state = SENDING;
-volatile uint8_t byte_to_send = 0;
+volatile uint8_t byte_to_send = 0xFF;
 volatile uint8_t last_received_message = 0xFF;
 uint16_t ticks_until_next_transition = 0;
 
@@ -33,6 +33,10 @@ void contact_loop() {
 
 void contact_set_byte_to_send(uint8_t message_byte) {
   byte_to_send = message_byte;
+}
+
+uint8_t contact_get_byte_to_send() {
+  return byte_to_send;
 }
 
 uint8_t contact_get_current_other_message() {
