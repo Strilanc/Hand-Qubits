@@ -68,6 +68,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SphereModelGenerator.cs" />
     <Compile Include="KnownBoards.cs" />
     <Compile Include="MotionDestGraph.cs" />
     <Compile Include="BoardDescription.cs" />

@@ -78,7 +78,7 @@ public class StateVector {
 
     private void normalize() {
         var w = vector.Select(e => e.Real * e.Real + e.Imaginary * e.Imaginary).Sum();
-        vector /= w;
+        vector /= Math.Sqrt(w);
     }
 
     public bool measureQubit(int target) {
@@ -92,5 +92,32 @@ public class StateVector {
         }
         normalize();
         return result;
+    }
+
+    public Vector3D qubitAsBlochVector(int target) {
+        // Aggregate density matrix entries.
+        var a = Complex.Zero;
+        var b = Complex.Zero;
+        var c = Complex.Zero;
+        var d = Complex.Zero;
+        var t = 1 << target;
+        for (int i = 0; i < vector.Count; i++) {
+            if ((i & t) != 0) {
+                continue;
+            }
+
+            var off = vector[i];
+            var on = vector[i | t];
+            a += off * off.Conjugated();
+            b += off * on.Conjugated();
+            c += on * off.Conjugated();
+            d += on * on.Conjugated();
+        }
+
+        // Convert matrix to vector.
+        var x = (c + b).Real;
+        var y = (c - b).Imaginary;
+        var z = (d - a).Real;
+        return new Vector3D(x, y, z);
     }
 }

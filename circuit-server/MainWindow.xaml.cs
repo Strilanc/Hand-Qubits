@@ -14,20 +14,24 @@ namespace QubitServer {
             InitializeComponent();
 
             ThreadPool.SetMinThreads(8, 8);
-            dumpMotionDataToGraph(KnownBoard.Aldo, motionChart1, poseTransform1);
-            dumpMotionDataToGraph(KnownBoard.Bip, motionChart2, poseTransform2);
-            dumpMotionDataToGraph(KnownBoard.Colu, motionChart3, poseTransform3);
-            dumpMotionDataToGraph(KnownBoard.Dask, motionChart4, poseTransform4);
+            dumpMotionDataToGraph(KnownBoard.Aldo, motionChart1, poseTransform1, blochPoint1);
+            dumpMotionDataToGraph(KnownBoard.Bip, motionChart2, poseTransform2, blochPoint2);
+            dumpMotionDataToGraph(KnownBoard.Colu, motionChart3, poseTransform3, blochPoint3);
+            dumpMotionDataToGraph(KnownBoard.Dask, motionChart4, poseTransform4, blochPoint4);
         }
 
-        private void dumpMotionDataToGraph(BoardDescription board, Chart chart, RotateTransform3D pose) {
-            var teapotRotationAdjust = new Quaternion(new Vector3D(0, 0, 1), -45)
-                * new Quaternion(new Vector3D(1, 0, 0), 90);
+        private void dumpMotionDataToGraph(BoardDescription board, Chart chart, RotateTransform3D pose, TranslateTransform3D blochTransform) {
+            var teapotRotationAdjust = new Quaternion(new Vector3D(1, 0, 0), 90) * new Quaternion(new Vector3D(0, 1, 0), 90);
 
             var qubitMotionTracker = new QubitMotionTracker(
                 KnownBoard.Colu,
                 new MotionDestGraph(chart),
-                q => pose.Rotation = new QuaternionRotation3D(teapotRotationAdjust * q));
+                q => pose.Rotation = new QuaternionRotation3D(teapotRotationAdjust * q),
+                v => {
+                    blochTransform.OffsetX = v.X;
+                    blochTransform.OffsetY = v.Y;
+                    blochTransform.OffsetZ = v.Z;
+                });
 
             buttonHandlers += () => qubitMotionTracker.reset();
 

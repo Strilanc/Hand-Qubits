@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO.Ports;
+using System.Numerics;
 using System.Windows.Media.Media3D;
 
 public static class Util {
@@ -25,6 +26,10 @@ public static class Util {
         Quaternion t = q;
         t.Conjugate();
         return t;
+    }
+
+    public static Complex Conjugated(this Complex c) {
+        return new Complex(c.Real, -c.Imaginary);
     }
 
     public static string ToShortString(this Vector3D v) {

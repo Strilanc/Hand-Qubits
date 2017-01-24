@@ -5,16 +5,18 @@ using InTheHand.Net;
 class QubitMotionTracker {
     public readonly BoardDescription board;
     private readonly Action<Quaternion> output;
+    private readonly Action<Vector3D> blochOutput;
     private readonly MotionDestGraph graph;
     private Quaternion pose = Quaternion.Identity;
     private byte lastPeer = 0xFF;
     private byte nextPeer;
     private byte nextPeerStability;
 
-    public QubitMotionTracker(BoardDescription board, MotionDestGraph graph, Action<Quaternion> output) {
+    public QubitMotionTracker(BoardDescription board, MotionDestGraph graph, Action<Quaternion> output, Action<Vector3D> blochOutput) {
         this.board = board;
         this.graph = graph;
         this.output = output;
+        this.blochOutput = blochOutput;
 
         output(Quaternion.Identity);
     }
@@ -36,23 +38,25 @@ class QubitMotionTracker {
             lastPeer = nextPeer;
             needOperation = true;
         }
-        
-        // Switch from accelerometer coordinates to board coordinates.
-        dPose = board.motionOrientation * dPose * board.motionOrientation.Conjugated();
 
-        pose *= dPose;
+        // Switch from accelerometer coordinates to board coordinates.
+        var teapotRotationAdjust = new Quaternion(new Vector3D(1, 0, 0), 90) * new Quaternion(new Vector3D(0, 1, 0), 90);
+        var dPose2 = pose.Conjugated() * dPose * pose;
+
+        pose = dPose.Conjugated() * pose;
         pose.Normalize();
 
         var control = reading.peerContactId < state.qubitCount ? (int?)reading.peerContactId : null;
-        state.rotateQubit(dPose, reading.contactId, control);
+        state.rotateQubit(dPose2, reading.contactId, control);
 
         bool? r = null;
         if (reading.doMeasurement) {
             r = state.measureQubit(reading.contactId);
-            this.pose = r.Value ? new Quaternion(1, 0, 0, 0) : Quaternion.Identity;
+            //this.pose = r.Value ? new Quaternion(1, 0, 0, 0) : Quaternion.Identity;
         }
 
-        output(pose);
+        output(board.motionOrientation * pose.Conjugated() * board.motionOrientation.Conjugated());
+        blochOutput(state.qubitAsBlochVector(reading.contactId));
 
         graph.showReading(new MotionSourceReading { deltaRotation = dPose, upward = reading.upward });
 
