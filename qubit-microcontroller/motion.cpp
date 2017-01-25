@@ -2,6 +2,7 @@
 #include <math.h>
 #include <Wire.h>
 
+#include "motion.h"
 #include "contact.h"
 #include "quaternion.h"
 
@@ -90,11 +91,11 @@ struct vec3 recordGyroRegisters() {
 }
 
 void serialWriteInt(int s) {
-  Serial.write((byte)(s & 0xFF));
-  Serial.write((byte)((s >> 8) & 0xFF));
+  bluetoothSerial.write((byte)(s & 0xFF));
+  bluetoothSerial.write((byte)((s >> 8) & 0xFF));
 }
 void serialWriteFloat(float f) {
-  Serial.write((byte*)(void*)&f, 4);
+  bluetoothSerial.write((byte*)(void*)&f, 4);
 }
 void serialWriteVec3(vec3 v) {
   serialWriteFloat(v.x);
@@ -152,11 +153,11 @@ vec3 readNextAccel() {
 }
 
 void send_accumulated_motion_and_reset() {
-  Serial.write(0xA9);
+  bluetoothSerial.write(0xA9);
   serialWriteQuaternion(pose);
   serialWriteFloat(bumpiness);
-  Serial.write(contact_get_byte_to_send());
-  Serial.write(contact_get_current_other_message());
+  bluetoothSerial.write(contact_get_byte_to_send());
+  bluetoothSerial.write(contact_get_current_other_message());
 
   bumpiness = 0;
   pose = Quaternion { 1, 0, 0, 0 };

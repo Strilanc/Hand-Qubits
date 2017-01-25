@@ -1,7 +1,8 @@
-﻿using System.Windows.Media.Media3D;
+﻿using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 public interface MotionSource {
-    void init();
+    Task init();
     MotionSourceReading nextReading();
     void setContactId(byte id);
     void reportMeasurement(bool result);

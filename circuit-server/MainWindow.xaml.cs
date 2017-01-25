@@ -15,7 +15,7 @@ namespace QubitServer {
 
             ThreadPool.SetMinThreads(8, 8);
             dumpMotionDataToGraph(KnownBoard.Aldo, motionChart1, poseTransform1, blochPoint1);
-            dumpMotionDataToGraph(KnownBoard.Bip, motionChart2, poseTransform2, blochPoint2);
+            dumpMotionDataToGraph(KnownBoard.Boni, motionChart2, poseTransform2, blochPoint2);
             dumpMotionDataToGraph(KnownBoard.Colu, motionChart3, poseTransform3, blochPoint3);
             dumpMotionDataToGraph(KnownBoard.Dask, motionChart4, poseTransform4, blochPoint4);
         }
@@ -24,7 +24,7 @@ namespace QubitServer {
             var teapotRotationAdjust = new Quaternion(new Vector3D(1, 0, 0), 90) * new Quaternion(new Vector3D(0, 1, 0), 90);
 
             var qubitMotionTracker = new QubitMotionTracker(
-                KnownBoard.Colu,
+                board,
                 new MotionDestGraph(chart),
                 q => pose.Rotation = new QuaternionRotation3D(teapotRotationAdjust * q),
                 v => {
@@ -36,14 +36,14 @@ namespace QubitServer {
             buttonHandlers += () => qubitMotionTracker.reset();
 
             dumpMotionDataToGraph(
-                new MotionSourceBluetooth(qubitMotionTracker.board.address),
+                new MotionSourceBluetooth(qubitMotionTracker.board),
                 e => qubitMotionTracker.advanceSimulation(e, state));
         }
 
         private void dumpMotionDataToGraph(MotionSource src, Func<MotionSourceReading, bool?> dst) {
             var id = next_id++;
-            ThreadPool.QueueUserWorkItem(_ => Util.RetryForever(() => {
-                src.init();
+            ThreadPool.QueueUserWorkItem(_ => Util.RetryForeverAsync(async () => {
+                await src.init();
                 src.setContactId(id);
 
                 while (true) {

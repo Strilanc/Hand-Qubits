@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO.Ports;
 using System.Numerics;
+using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
 public static class Util {
@@ -40,6 +41,16 @@ public static class Util {
         while (true) {
             try {
                 action();
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+    }
+
+    public static async void RetryForeverAsync(Func<Task> action) {
+        while (true) {
+            try {
+                await action();
             } catch (Exception ex) {
                 System.Diagnostics.Debug.WriteLine(ex);
             }

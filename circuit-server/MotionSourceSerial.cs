@@ -1,4 +1,5 @@
 ﻿using System.IO.Ports;
+using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
 class MotionSourceSerial : MotionSource {
@@ -11,7 +12,7 @@ class MotionSourceSerial : MotionSource {
         this.rate = rate;
     }
 
-    public void init() {
+    public Task init() {
         r = new SerialPort(port);
         r.BaudRate = rate;
         r.DataBits = 8;
@@ -19,6 +20,7 @@ class MotionSourceSerial : MotionSource {
         r.Handshake = Handshake.None;
         r.Parity = Parity.None;
         r.Open();
+        return Task.FromResult(0);
     }
 
     public MotionSourceReading nextReading() {

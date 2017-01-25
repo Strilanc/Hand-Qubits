@@ -4,8 +4,13 @@
 
 #define LED_PIN 13
 
+#define BLUETOOTH_RXD_PIN 3
+#define BLUETOOTH_TXD_PIN 4
+SoftwareSerial bluetoothSerial(BLUETOOTH_RXD_PIN, BLUETOOTH_TXD_PIN);
+
 void setup() {
   Serial.begin(9600);
+  bluetoothSerial.begin(9600);
   pinMode(LED_PIN, OUTPUT);
 
   contact_setup();
@@ -26,11 +31,11 @@ void loop() {
 }
 
 void read_any_commands_from_serial() {
-  while (Serial.available() > 0) {
-    switch (Serial.read()) {
+  while (bluetoothSerial.available() > 0) {
+    switch (bluetoothSerial.read()) {
       case 'm':
         // Message.
-        contact_set_byte_to_send(Serial.read());
+        contact_set_byte_to_send(bluetoothSerial.read());
         break;
         
       case 'r':
