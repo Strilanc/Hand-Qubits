@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QubitServer", "QubitServer.csproj", "{194B8816-65B6-43DD-B410-329510D75346}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandQubitServer", "src\HandQubitServer.csproj", "{194B8816-65B6-43DD-B410-329510D75346}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QubitServerTest", "..\QubitServerTest\QubitServerTest.csproj", "{2F580C67-C7D9-46BB-8495-3FAFA92DFDB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandQubitServerTest", "test\HandQubitServerTest.csproj", "{2F580C67-C7D9-46BB-8495-3FAFA92DFDB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

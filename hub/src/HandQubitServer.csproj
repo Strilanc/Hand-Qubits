@@ -7,8 +7,8 @@
     <ProjectGuid>{194B8816-65B6-43DD-B410-329510D75346}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SerialViz2</RootNamespace>
-    <AssemblyName>SerialViz2</AssemblyName>
+    <RootNamespace>HandQubitServer</RootNamespace>
+    <AssemblyName>HandQubitServer</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,13 +34,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>QubitServer.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="InTheHand.Net.Personal, Version=3.5.605.0, Culture=neutral, PublicKeyToken=ea38caa273134499, processorArchitecture=MSIL">
-      <HintPath>packages\32feet.NET.3.5.0.0\lib\net\InTheHand.Net.Personal.dll</HintPath>
+      <HintPath>..\packages\32feet.NET.3.5.0.0\lib\net\InTheHand.Net.Personal.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <HintPath>..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -68,21 +71,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="SphereModelGenerator.cs" />
-    <Compile Include="KnownBoards.cs" />
-    <Compile Include="MotionDestGraph.cs" />
-    <Compile Include="BoardDescription.cs" />
-    <Compile Include="QubitMotionTracker.cs" />
-    <Compile Include="MotionSourceSerial.cs" />
-    <Compile Include="MotionSourceBluetooth.cs" />
-    <Compile Include="MotionSource.cs" />
-    <Compile Include="SmoothedReadings.cs" />
-    <Compile Include="StateVector.cs" />
+    <Compile Include="ui\SphereModelGenerator.cs" />
+    <Compile Include="config\KnownBoards.cs" />
+    <Compile Include="ui\MotionDestGraph.cs" />
+    <Compile Include="qubit\BoardDescription.cs" />
+    <Compile Include="sim\QubitMotionTracker.cs" />
+    <Compile Include="qubit\MotionSourceSerial.cs" />
+    <Compile Include="qubit\MotionSourceBluetooth.cs" />
+    <Compile Include="qubit\MotionSource.cs" />
+    <Compile Include="sim\SmoothedReadings.cs" />
+    <Compile Include="sim\StateVector.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="Pose.cs" />
-    <Compile Include="Operations.cs" />
-    <Compile Include="Readings.cs" />
-    <Page Include="MainWindow.xaml">
+    <Compile Include="sim\Pose.cs" />
+    <Compile Include="sim\Operations.cs" />
+    <Compile Include="qubit\Readings.cs" />
+    <Page Include="ui\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -90,7 +93,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="ui\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

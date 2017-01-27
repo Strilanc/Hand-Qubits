@@ -6,8 +6,8 @@
     <ProjectGuid>{2F580C67-C7D9-46BB-8495-3FAFA92DFDB8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QubitServerTest</RootNamespace>
-    <AssemblyName>QubitServerTest</AssemblyName>
+    <RootNamespace>HandQubitServerTest</RootNamespace>
+    <AssemblyName>HandQubitServerTest</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Numerics, Version=3.17.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\circuit-server\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <HintPath>..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -56,18 +56,19 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="StateVectorTest.cs" />
+    <Compile Include="sim\StateVectorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\circuit-server\QubitServer.csproj">
+    <ProjectReference Include="..\src\HandQubitServer.csproj">
       <Project>{194b8816-65b6-43dd-b410-329510d75346}</Project>
-      <Name>QubitServer</Name>
+      <Name>HandQubitServer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

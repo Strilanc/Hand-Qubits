@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Media.Media3D;
 
-namespace QubitServer {
+namespace ui {
     public class SphereModelGenerator {
         public MeshGeometry3D Geometry {
             get {
