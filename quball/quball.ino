@@ -1,6 +1,6 @@
-#include "contact.h"
-#include "motion.h"
-#include "sound.h"
+#include "src/contact.h"
+#include "src/motion.h"
+#include "src/sound.h"
 
 #define LED_PIN 13
 
