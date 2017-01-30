@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "common.h"
-#include "../quaternion.h"
-#include "../quaternion.cpp"
+#include "../src/quaternion.h"
+#include "../src/quaternion.cpp"
 #define PI 3.14159265358979323846f
 
 void assert_near(Quaternion q1, Quaternion q2) {

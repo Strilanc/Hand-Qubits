@@ -1,6 +1,6 @@
 #include "coder.h"
 
-uint8_t crc8(uint8_t* bytes, int len, uint8_t gen = 0x31) {
+uint8_t crc8(uint8_t* bytes, int len, uint8_t gen) {
   uint8_t crc = 0;
   for (int i = 0; i < len; i++) {
     crc ^= bytes[i];
@@ -14,4 +14,3 @@ uint8_t crc8(uint8_t* bytes, int len, uint8_t gen = 0x31) {
   }
   return crc;
 } 
-

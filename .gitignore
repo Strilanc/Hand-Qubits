@@ -2,4 +2,8 @@
 **/obj/
 *.suo
 */packages/*
-*/test/Dev/*
+**/Dev/**
+*.sdf
+*.opendb
+*.filters
+*.user

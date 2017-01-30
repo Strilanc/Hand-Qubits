@@ -7,17 +7,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{59204D4B-679A-40A8-AECF-EE856275BC0B}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
-    <RootNamespace>test</RootNamespace>
+    <ProjectGuid>{3CBD4E63-0F01-4AC9-B32A-1A4DA7D972FB}</ProjectGuid>
+    <RootNamespace>Project1</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>src</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -29,32 +29,32 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\Craig\Desktop\Hand-Qubits\quball\test\harness;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile />
-      <PrecompiledHeaderOutputFile />
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="common.h" />
-    <ClCompile Include="harness\Arduino.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="test_coder.cpp" />
-    <ClCompile Include="test_quaternion.cpp" />
+    <ClCompile Include="bitword.cpp" />
+    <ClCompile Include="coder.cpp" />
+    <ClCompile Include="contact.cpp" />
+    <ClCompile Include="hardware_timer_1.cpp" />
+    <ClCompile Include="motion.cpp" />
+    <ClCompile Include="quaternion.cpp" />
+    <ClCompile Include="sound.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="harness\Arduino.h" />
+    <ClInclude Include="bitword.h" />
+    <ClInclude Include="coder.h" />
+    <ClInclude Include="contact.h" />
+    <ClInclude Include="hardware_timer_1.h" />
+    <ClInclude Include="motion.h" />
+    <ClInclude Include="quaternion.h" />
+    <ClInclude Include="sound.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
