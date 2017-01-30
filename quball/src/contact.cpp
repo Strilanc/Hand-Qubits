@@ -11,6 +11,7 @@
 #define SENDING 2
 
 #define MAGIC ((uint8_t)0xA3)
+#define CHECK_BYTE(b) ((uint8_t) (~(b) ^ 0x42))
 #define EXP_MSG_LEN 3
 #define EXP_MSG_BIT_LEN (EXP_MSG_LEN*8)
 #define TICK_MICROS 512
@@ -46,7 +47,6 @@ uint8_t contact_get_current_other_message() {
 void start_listening(uint16_t extra_ticks);
 void start_sending(void);
 
-
 uint8_t send_queue_bits = 0;
 uint8_t send_queue_len = 0;
 BitWord send_bits;
@@ -61,11 +61,10 @@ void start_sending() {
   // Give a bit of time to take control of voltage.
   send_bits.enq(true);
 
-  // Message w/ leading magic byte and trailing crc.
+  // Message w/ leading magic byte and trailing check byte.
   send_bits.enq(MAGIC);
   send_bits.enq(byte_to_send);
-  uint8_t dat[] {MAGIC, byte_to_send};
-  send_bits.enq(crc8(dat, sizeof(dat)));
+  send_bits.enq(CHECK_BYTE(byte_to_send));
 }
 
 void do_sending() {
@@ -147,16 +146,17 @@ void do_listening() {
     bitWrite(received_bit_mask, EXP_MSG_BIT_LEN-1-i, b);
   }
 
-  // Does it have the right magic byte and a correct CRC?
+  // Does it have the right magic byte and a correct check byte?
   byte* vb = (byte*) (void*) &received_bit_mask;
   int e = EXP_MSG_LEN - 1;
-  if (vb[0] != MAGIC || vb[e] != crc8(vb, e)) {
+  int m = vb[1];
+  if (vb[0] != MAGIC || vb[e] != CHECK_BYTE(m)) {
     return;
   }
 
   // Message received.
   state = DID_RECEIVE_NOW_WAITING;
-  last_received_message = vb[1];
+  last_received_message = m;
 
   // The sender is about to start listening, so now we know when to start sending.
   // (This line causes a lock-on effect, where the send/receive cycle rate jumps when the two agents can hear each other.)
