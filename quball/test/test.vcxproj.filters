@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="harness\Arduino.cpp">
-      <Filter>harness</Filter>
-    </ClCompile>
     <ClCompile Include="common.h">
       <Filter>harness</Filter>
     </ClCompile>
@@ -37,17 +34,20 @@
     <ClCompile Include="test_quaternion.cpp">
       <Filter>test</Filter>
     </ClCompile>
-    <ClCompile Include="harness\Wire.cpp">
-      <Filter>harness</Filter>
-    </ClCompile>
-    <ClCompile Include="harness\SoftwareSerial.cpp">
-      <Filter>harness</Filter>
-    </ClCompile>
     <ClCompile Include="harness\fake_hardware_timer_1.cpp">
       <Filter>harness</Filter>
     </ClCompile>
     <ClCompile Include="test_motion.cpp">
       <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="harness\fake_SoftwareSerial.cpp">
+      <Filter>harness</Filter>
+    </ClCompile>
+    <ClCompile Include="harness\fake_Wire.cpp">
+      <Filter>harness</Filter>
+    </ClCompile>
+    <ClCompile Include="harness\fake_Arduino.cpp">
+      <Filter>harness</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

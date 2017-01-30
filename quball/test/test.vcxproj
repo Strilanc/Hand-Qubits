@@ -56,10 +56,10 @@
     <ClCompile Include="..\src\quaternion.cpp" />
     <ClCompile Include="..\src\sound.cpp" />
     <ClCompile Include="common.h" />
-    <ClCompile Include="harness\Arduino.cpp" />
+    <ClCompile Include="harness\fake_Arduino.cpp" />
     <ClCompile Include="harness\fake_hardware_timer_1.cpp" />
-    <ClCompile Include="harness\SoftwareSerial.cpp" />
-    <ClCompile Include="harness\Wire.cpp" />
+    <ClCompile Include="harness\fake_SoftwareSerial.cpp" />
+    <ClCompile Include="harness\fake_Wire.cpp" />
     <ClCompile Include="test_contact.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="test_coder.cpp" />
