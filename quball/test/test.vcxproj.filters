@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="harness\Arduino.cpp">
+      <Filter>harness</Filter>
+    </ClCompile>
+    <ClCompile Include="common.h">
+      <Filter>harness</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\bitword.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\coder.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\contact.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\motion.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\quaternion.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\sound.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_coder.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_contact.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_quaternion.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="harness\Wire.cpp">
+      <Filter>harness</Filter>
+    </ClCompile>
+    <ClCompile Include="harness\SoftwareSerial.cpp">
+      <Filter>harness</Filter>
+    </ClCompile>
+    <ClCompile Include="harness\fake_hardware_timer_1.cpp">
+      <Filter>harness</Filter>
+    </ClCompile>
+    <ClCompile Include="test_motion.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="harness">
+      <UniqueIdentifier>{3d243606-fbe6-444c-943d-59064d655400}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{50a32862-7d91-4c2b-953e-f04061ac1333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{7dd48cd4-a01d-4660-9919-d00f8b9a99dc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="harness\Arduino.h">
+      <Filter>harness</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\bitword.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\coder.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\contact.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\hardware_timer_1.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\motion.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\quaternion.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\sound.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="harness\Wire.h">
+      <Filter>harness</Filter>
+    </ClInclude>
+    <ClInclude Include="harness\SoftwareSerial.h">
+      <Filter>harness</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

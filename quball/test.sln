@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{59204D4B-679A-40A8-AECF-EE856275BC0B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "src", "src\src.vcxproj", "{3CBD4E63-0F01-4AC9-B32A-1A4DA7D972FB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Dev|x86 = Dev|x86
@@ -14,8 +12,6 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{59204D4B-679A-40A8-AECF-EE856275BC0B}.Dev|x86.ActiveCfg = Dev|Win32
 		{59204D4B-679A-40A8-AECF-EE856275BC0B}.Dev|x86.Build.0 = Dev|Win32
-		{3CBD4E63-0F01-4AC9-B32A-1A4DA7D972FB}.Dev|x86.ActiveCfg = Dev|Win32
-		{3CBD4E63-0F01-4AC9-B32A-1A4DA7D972FB}.Dev|x86.Build.0 = Dev|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

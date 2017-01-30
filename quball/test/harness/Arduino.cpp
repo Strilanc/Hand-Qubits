@@ -21,7 +21,7 @@ int test_harness_get_pin(int pin) {
     return 0;
 }
 
-unsigned long long millis() {
+unsigned long millis() {
     return 0;
 }
 

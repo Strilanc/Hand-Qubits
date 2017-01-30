@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "common.h"
-#include "../src/coder.h"
-#include "../src/coder.cpp"
+#include "coder.h"
 
 void coder_main() {
 	test("crc8", []() {

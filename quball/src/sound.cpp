@@ -29,7 +29,7 @@ static Item peek() {
 
 static Item dequeue() {
   if (queue_len <= 0) {
-    return;
+    return Item{};
   }
   Item result = peek();
   queue_len--;
@@ -38,7 +38,7 @@ static Item dequeue() {
   return result;
 }
 
-void queue_tone(int tone_millis, int quiet_millis, int repeats = 1, bool flush = false) {
+void queue_tone(int tone_millis, int quiet_millis, int repeats, bool flush) {
   unsigned long now_time = millis();
   if (next_time < now_time || flush) {
     next_time = now_time;

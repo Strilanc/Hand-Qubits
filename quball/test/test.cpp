@@ -7,11 +7,15 @@ static std::string cur_name = "";
 static int cur_assert = 0;
 void coder_main();
 void quaternion_main();
+void contact_main();
+void motion_main();
 
 int main() {
 	quaternion_main();
-	coder_main();
-	printf("ALL PASS\n");
+    coder_main();
+    contact_main();
+    motion_main();
+    printf("ALL PASS\n");
 	return 0;
 }
 

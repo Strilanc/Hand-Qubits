@@ -27,7 +27,7 @@ void pinMode(int pin, int mode);
 void digitalWrite(int pin, bool val);
 int random(int min_inclusive, int max_exclusive);
 int analogRead(int pin);
-unsigned long long millis();
+unsigned long millis();
 unsigned long long micros();
 
 template<typename T>

@@ -116,11 +116,11 @@ Quaternion readNextGyroQuaternion() {
 
   // If still early, build up average to calibrate zero bias.
   float g = v.x*v.x + v.y*v.y + v.z*v.z;
-  gyration = gyration * 0.9 + g * 0.1;
+  gyration = gyration * 0.9f + g * 0.1f;
   if (gyration < 100000.0 && calibration_readings < 10000) {
     calibration_readings++;
-    float a = 0.999;
-    float b = 1.0 - a;
+    float a = 0.999f;
+    float b = 1 - a;
     bias.x *= a;
     bias.y *= a;
     bias.z *= a;
@@ -135,7 +135,7 @@ Quaternion readNextGyroQuaternion() {
   v.z -= bias.z;
 
   // Duration to integrate over.
-  unsigned long t = micros();
+  uint64_t t = micros();
   int dt = (int)(t - last_gyro_read_time);
   last_gyro_read_time = t;
 

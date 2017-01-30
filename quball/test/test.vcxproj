@@ -30,6 +30,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>..\src;..\test\harness;$(IncludePath)</IncludePath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'">
     <ClCompile>
@@ -47,14 +49,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\bitword.cpp" />
+    <ClCompile Include="..\src\coder.cpp" />
+    <ClCompile Include="..\src\contact.cpp" />
+    <ClCompile Include="..\src\motion.cpp" />
+    <ClCompile Include="..\src\quaternion.cpp" />
+    <ClCompile Include="..\src\sound.cpp" />
     <ClCompile Include="common.h" />
     <ClCompile Include="harness\Arduino.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="harness\fake_hardware_timer_1.cpp" />
+    <ClCompile Include="harness\SoftwareSerial.cpp" />
+    <ClCompile Include="harness\Wire.cpp" />
+    <ClCompile Include="test_contact.cpp" />
+    <ClCompile Include="test.cpp" />
     <ClCompile Include="test_coder.cpp" />
+    <ClCompile Include="test_motion.cpp" />
     <ClCompile Include="test_quaternion.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\bitword.h" />
+    <ClInclude Include="..\src\coder.h" />
+    <ClInclude Include="..\src\contact.h" />
+    <ClInclude Include="..\src\hardware_timer_1.h" />
+    <ClInclude Include="..\src\motion.h" />
+    <ClInclude Include="..\src\quaternion.h" />
+    <ClInclude Include="..\src\sound.h" />
     <ClInclude Include="harness\Arduino.h" />
+    <ClInclude Include="harness\SoftwareSerial.h" />
+    <ClInclude Include="harness\Wire.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
