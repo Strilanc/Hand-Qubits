@@ -11,4 +11,3 @@ void sound_setup();
 void set_ticking(bool ticking);
 
 #endif
-

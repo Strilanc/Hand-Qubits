@@ -22,4 +22,3 @@ uint8_t contact_get_byte_to_send();
 uint8_t contact_get_current_other_message();
 
 #endif
-
