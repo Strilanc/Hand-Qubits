@@ -71,20 +71,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="qubit\QuballReport.cs" />
     <Compile Include="ui\SphereModelGenerator.cs" />
     <Compile Include="config\KnownBoards.cs" />
     <Compile Include="ui\MotionDestGraph.cs" />
     <Compile Include="qubit\BoardDescription.cs" />
     <Compile Include="sim\QubitMotionTracker.cs" />
-    <Compile Include="qubit\MotionSourceSerial.cs" />
-    <Compile Include="qubit\MotionSourceBluetooth.cs" />
-    <Compile Include="qubit\MotionSource.cs" />
-    <Compile Include="sim\SmoothedReadings.cs" />
+    <Compile Include="qubit\QuballClient.cs" />
+    <Compile Include="qubit\IQuballClient.cs" />
     <Compile Include="sim\StateVector.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="sim\Pose.cs" />
     <Compile Include="sim\Operations.cs" />
-    <Compile Include="qubit\Readings.cs" />
     <Page Include="ui\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

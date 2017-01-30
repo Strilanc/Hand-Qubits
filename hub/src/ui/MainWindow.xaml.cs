@@ -35,26 +35,26 @@ public partial class MainWindow : Window {
         buttonHandlers += () => qubitMotionTracker.reset();
 
         dumpMotionDataToGraph(
-            new MotionSourceBluetooth(qubitMotionTracker.board),
+            new QuballClient(qubitMotionTracker.board),
             e => qubitMotionTracker.advanceSimulation(e, state));
     }
 
-    private void dumpMotionDataToGraph(MotionSource src, Func<MotionSourceReading, bool?> dst) {
+    private void dumpMotionDataToGraph(IQuballClient src, Func<QuballReport, bool?> dst) {
         var id = next_id++;
         ThreadPool.QueueUserWorkItem(_ => Util.RetryForeverAsync(async () => {
-            await src.init();
-            src.setContactId(id);
+            await src.Init();
+            src.TellOwnId(id);
 
             while (true) {
-                var reading = src.nextReading();
-                if (reading.contactId != id) {
-                    src.setContactId(id);
-                    reading.contactId = id;
+                var reading = src.NextReading();
+                if (reading.id != id) {
+                    src.TellOwnId(id);
+                    reading.id = id;
                 }
                 Application.Current.Dispatcher.Invoke(() => {
                     var m = dst(reading);
                     if (m.HasValue) {
-                        src.reportMeasurement(m.Value);
+                        src.TellMeasurementResult(m.Value);
                     }
                 });
             }

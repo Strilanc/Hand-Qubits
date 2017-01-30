@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Media.Media3D;
-using InTheHand.Net;
 
 class QubitMotionTracker {
     public readonly BoardDescription board;
@@ -8,8 +7,8 @@ class QubitMotionTracker {
     private readonly Action<Vector3D> blochOutput;
     private readonly MotionDestGraph graph;
     private Quaternion pose = Quaternion.Identity;
-    private byte lastPeer = 0xFF;
-    private byte nextPeer;
+    private byte? lastPeer;
+    private byte? nextPeer;
     private byte nextPeerStability;
 
     public QubitMotionTracker(BoardDescription board, MotionDestGraph graph, Action<Quaternion> output, Action<Vector3D> blochOutput) {
@@ -21,7 +20,7 @@ class QubitMotionTracker {
         output(Quaternion.Identity);
     }
 
-    public bool? advanceSimulation(MotionSourceReading reading, StateVector state) {
+    public bool? advanceSimulation(QuballReport reading, StateVector state) {
         var needOperation = reading.doMeasurement;
 
         var dPose = reading.deltaRotation;
@@ -47,18 +46,18 @@ class QubitMotionTracker {
         pose.Normalize();
 
         var control = reading.peerContactId < state.qubitCount ? (int?)reading.peerContactId : null;
-        state.rotateQubit(dPose2, reading.contactId, control);
+        state.rotateQubit(dPose2, reading.id, control);
 
         bool? r = null;
         if (reading.doMeasurement) {
-            r = state.measureQubit(reading.contactId);
+            r = state.measureQubit(reading.id);
             //this.pose = r.Value ? new Quaternion(1, 0, 0, 0) : Quaternion.Identity;
         }
 
         output(board.motionOrientation * pose.Conjugated() * board.motionOrientation.Conjugated());
-        blochOutput(state.qubitAsBlochVector(reading.contactId));
+        blochOutput(state.qubitAsBlochVector(reading.id));
 
-        graph.showReading(new MotionSourceReading { deltaRotation = dPose, upward = reading.upward });
+        graph.showReading(new QuballReport { deltaRotation = dPose, upward = reading.upward });
 
         return r;
     }

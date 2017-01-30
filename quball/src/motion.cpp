@@ -17,6 +17,7 @@ static vec3 bias { 0, 0, 0 };
 static float gyration = 0;
 static int calibration_readings = 0;
 static Quaternion pose { 1, 0, 0, 0 };
+static vec3 accel { 0, 0, 0 };
 static int accumulate_count = 0;
 static float bumpiness;
 
@@ -154,12 +155,17 @@ vec3 readNextAccel() {
 
 void send_accumulated_motion_and_reset() {
   bluetoothSerial.write(0xA9);
-  serialWriteQuaternion(pose);
-  serialWriteFloat(bumpiness);
+  bluetoothSerial.write(0x42);
   bluetoothSerial.write(contact_get_byte_to_send());
   bluetoothSerial.write(contact_get_current_other_message());
+  serialWriteQuaternion(pose);
+  serialWriteVec3(accel);
+  serialWriteFloat(bumpiness);
 
   bumpiness = 0;
+  accel.x = 0;
+  accel.y = 0;
+  accel.z = 0;
   pose = Quaternion { 1, 0, 0, 0 };
 }
 
@@ -176,5 +182,8 @@ void motion_loop() {
 
   // Accumulate estimate of whether we're slamming into a table or not.
   vec3 v = readNextAccel();
+  accel.x += v.x;
+  accel.y += v.y;
+  accel.z += v.z;
   bumpiness += v.x*v.x + v.y*v.y + v.z*v.z;
 }

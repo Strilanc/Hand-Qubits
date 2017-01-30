@@ -12,7 +12,7 @@ class MotionDestGraph {
         chart.ChartAreas[0].AxisY.Minimum = -4;
     }
 
-    public void showReading(MotionSourceReading reading) {
+    public void showReading(QuballReport reading) {
         var bump = reading.upward.X / 300 - 4;
         var ang = reading.deltaRotation.Axis * reading.deltaRotation.Angle / 13;
 
