@@ -50,7 +50,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\bitword.cpp" />
-    <ClCompile Include="..\src\coder.cpp" />
+    <ClCompile Include="..\src\util.cpp" />
     <ClCompile Include="..\src\contact.cpp" />
     <ClCompile Include="..\src\motion.cpp" />
     <ClCompile Include="..\src\quaternion.cpp" />
@@ -68,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\bitword.h" />
-    <ClInclude Include="..\src\coder.h" />
+    <ClInclude Include="..\src\util.h" />
     <ClInclude Include="..\src\contact.h" />
     <ClInclude Include="..\src\hardware_timer_1.h" />
     <ClInclude Include="..\src\motion.h" />

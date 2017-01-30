@@ -21,7 +21,7 @@
 #define byte uint8_t
 
 #define bitRead(value, bit_position) ((((value) >> (bit_position)) & 1) != 0)
-#define bitWrite(target, bit, val) if (val) { target |= 1 << bit; } else { target &= ~(1 << bit); }
+#define bitWrite(target, bit, val) if (val) { target |= 1 << (bit); } else { target &= ~(1 << (bit)); }
 
 void pinMode(int pin, int mode);
 void digitalWrite(int pin, bool val);

@@ -12,7 +12,7 @@ struct vec3 {
     float z;
 };
 
-static unsigned long last_gyro_read_time = 0;
+static uint64_t last_gyro_read_time = 0;
 static vec3 bias{ 0, 0, 0 };
 static float gyration = 0;
 static int calibration_readings = 0;
@@ -75,9 +75,9 @@ struct vec3 mpuRequestAccel() {
     int buf[3];
     mpuRequest(0x3B, 3, buf);
     struct vec3 r;
-    r.x = buf[0];
-    r.y = buf[1];
-    r.z = buf[2];
+    r.x = (float)buf[0];
+    r.y = (float)buf[1];
+    r.z = (float)buf[2];
     return r;
 }
 
@@ -85,9 +85,9 @@ struct vec3 recordGyroRegisters() {
     int buf[3];
     mpuRequest(0x43, 3, buf);
     struct vec3 r;
-    r.x = buf[0];
-    r.y = buf[1];
-    r.z = buf[2];
+    r.x = (float)buf[0];
+    r.y = (float)buf[1];
+    r.z = (float)buf[2];
     return r;
 }
 
@@ -140,7 +140,7 @@ Quaternion readNextGyroQuaternion() {
     last_gyro_read_time = t;
 
     // Estimated rotation over sample duration.
-    float dw = dt * 3.14159265358979323846 / 180.0 / 1000.0 / 256.0 / 128.0;
+    float dw = dt * 3.14159265358979323846f / 180 / 1000 / 256 / 128;
     return Quaternion::from_angular_impulse(v.x * dw, v.y * dw, v.z * dw);
 }
 

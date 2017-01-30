@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include "contact.h"
-#include "coder.h"
+#include "util.h"
 #include "bitword.h"
 #include "hardware_timer_1.h"
 
@@ -56,7 +56,6 @@ void start_sending() {
     state = SENDING;
     send_queue_len = 0;
     ticks_until_next_transition = SEND_TICKS;
-    //ticks_until_next_transition = 0;
 
     // Give a bit of time to take control of voltage.
     send_bits.enq(true);

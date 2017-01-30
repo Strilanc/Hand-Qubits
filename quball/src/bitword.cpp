@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 #include "bitword.h"
+#include "util.h"
 
 void BitWord::enq(bool b) {
     bitWrite(buf[(write_pos >> 3) & 7], write_pos & 7, b);
@@ -21,7 +22,7 @@ bool BitWord::deq() {
 
 bool BitWord::val(uint8_t i) {
     i += read_pos;
-    return bitRead(buf[(i >> 3) & 7], i & 7) != 0;
+    return bitRead64(buf[(i >> 3) & 7], i & 7) != 0;
 }
 
 uint8_t BitWord::len() {
@@ -32,7 +33,7 @@ uint64_t BitWord::word() {
     int n = len();
     uint64_t v = 0;
     for (int i = 0; i < n; i++) {
-        bitWrite(v, i, val(i));
+        bitWrite64(v, i, val(i));
     }
     return v;
 }
