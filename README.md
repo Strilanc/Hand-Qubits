@@ -4,9 +4,9 @@
 
 This project contains code and instructions for making simulated toy qubits that you can hold.
 
-The basic idea is to have a bunch of balls with Arduinos and other electronics inside.
-The Arduinos record motion data and report it to a hub computer, which is doing the quantum simulation, over bluetooth.
-The basic actions of quantum computing (single-qubit operations, measurement, controlled operations) are mapped to movement of the balls (turning, knocking, and pressing together).
+The basic concept is to have a bunch of balls with Arduinos and other electronics inside.
+The Arduinos record motion data and report it over bluetooth to a hub computer doing the quantum simulation.
+Simple ball movements (turning, knocking, and pressing together) are thereby translated into quantum operations (single-qubit rotations, measurement, controlled rotations).
 
 The main things left to do are:
 
