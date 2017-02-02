@@ -26,4 +26,8 @@ struct BoardDescription {
         this.address = address;
         this.motionOrientation = motionOrientation;
     }
+
+    public override string ToString() {
+        return name + " (" + address + ")";
+    }
 }

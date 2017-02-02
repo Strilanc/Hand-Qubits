@@ -50,7 +50,10 @@ class QuballClient : IQuballClient {
 
     public QuballReport NextReading() {
         // Wait for header magic bytes.
-        while (reader.ReadByte() != 0xA9 || reader.ReadByte() != 0x42) {
+        while (true) {
+            if (reader.ReadByte() != 0xA9) continue;
+            if (reader.ReadByte() != 0x42) continue;
+            break;
         }
 
         // Who is this?
@@ -77,7 +80,7 @@ class QuballClient : IQuballClient {
 
         return new QuballReport {
             id = id,
-            peerContactId = peerContactId,
+            peerContactId = peerContactId < 0xFE ? (byte?)peerContactId : null,
             deltaRotation = dRot,
             upward = up,
             doMeasurement = Math.Abs(shake)/300 > 2,

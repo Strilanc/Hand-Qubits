@@ -54,7 +54,7 @@ public class StateVectorTest {
     public void TestBellInequalityViolation() {
         var r = new Random();
         var t = 0;
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 20000; i++) {
             StateVector v = new StateVector(2);
             v.rotateQubit(StateVector.H, 0);
             v.rotateQubit(StateVector.X, 1, 0);

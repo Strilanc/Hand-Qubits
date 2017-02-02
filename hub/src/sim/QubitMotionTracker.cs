@@ -51,7 +51,6 @@ class QubitMotionTracker {
         bool? r = null;
         if (reading.doMeasurement) {
             r = state.measureQubit(reading.id);
-            //this.pose = r.Value ? new Quaternion(1, 0, 0, 0) : Quaternion.Identity;
         }
 
         output(board.motionOrientation * pose.Conjugated() * board.motionOrientation.Conjugated());

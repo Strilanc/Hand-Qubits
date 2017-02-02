@@ -10,7 +10,7 @@ SoftwareSerial bluetoothSerial(BLUETOOTH_RXD_PIN, BLUETOOTH_TXD_PIN);
 
 void setup() {
   Serial.begin(9600);
-  bluetoothSerial.begin(9600);
+  bluetoothSerial.begin(115200);
   pinMode(LED_PIN, OUTPUT);
 
   contact_setup();
@@ -20,7 +20,6 @@ void setup() {
 
 void loop() {
   contact_loop();
-  motion_loop();
   sound_loop();
 
   read_any_commands_from_serial();
@@ -28,6 +27,8 @@ void loop() {
   bool is_in_contact = contact_get_current_other_message() != 0xFF;
   set_ticking(is_in_contact);
   digitalWrite(LED_PIN, is_in_contact);
+
+  motion_loop();
 }
 
 void read_any_commands_from_serial() {

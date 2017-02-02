@@ -19,7 +19,7 @@
 #define LISTEN_TICKS (SEND_TICKS+8)
 
 int state = SENDING;
-volatile uint8_t byte_to_send = 0xFF;
+volatile uint8_t byte_to_send = 0xFE;
 volatile uint8_t last_received_message = 0xFF;
 uint16_t ticks_until_next_transition = 0;
 
@@ -134,10 +134,6 @@ void do_listening() {
     for (int i = 0; i < EXP_MSG_BIT_LEN; i++) {
         bool a = bitRead64(read_bit_mask, i * 2);
         bool b = bitRead64(read_bit_mask, i * 2 + 1);
-    }
-    for (int i = EXP_MSG_BIT_LEN - 1; i >= 0; i--) {
-        bool a = bitRead64(read_bit_mask, i * 2);
-        bool b = bitRead64(read_bit_mask, i * 2 + 1);
         if (a == b) {
             // Not manchester encoded.
             return;
@@ -167,7 +163,6 @@ void do_hardware_loop() {
     if (ticks_until_next_transition-- == 0) {
         switch (state) {
         case LISTENING:
-            //Serial.println("NO");
             last_received_message = 0xFF; // Failed to receive.
             start_sending();
             break;
