@@ -19,7 +19,7 @@ The main things left to do are:
 
 [[[work in progress]]]
 
-# Using
+# How To Use
 
 - Each ball is a qubit.
 - A nearby computer acts as a hub handling the quantum simulation and talking to the balls over bluetooth.
@@ -27,11 +27,7 @@ The main things left to do are:
 - When you **knock** a ball against a surface, its qubit is *measured*. The measurement axis is always vertical, and the result is indicated by a buzzer going "Beep beep beep!" for DOWN or "Riiiiiiiing!" for UP.
 - When you **press** two balls **together**, rotations become *controlled*. Turning one ball will only affect the parts of the state space where the other ball's qubit is UP.
 
-# Making
-
-Inside each ball is a breadboard with an Arduino Uno, an MPU-6050 accelerometer/gyrometer, an HC-05 (or HC-06) bluetooth module, a buzzer, and a 9V battery:
-
-The balls are wrapped in copper tape so that, when they touch, the Arduinos inside each can talk to each other over the janky shared electrical connection.
+# Making Your Own
 
 0. **Clone the repository.**
 
