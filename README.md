@@ -15,11 +15,11 @@ The main things left to do are:
 - Correctly turning the motion into quantum rotations.
 - Make a demo video demonstrating quantum teleportation.
 
-# Demo
+### Demo
 
 [[[work in progress]]]
 
-# How To Use
+### How To Use
 
 - Each ball is a qubit.
 - A nearby computer acts as a hub handling the quantum simulation and talking to the balls over bluetooth.
@@ -27,7 +27,7 @@ The main things left to do are:
 - When you **knock** a ball against a surface, its qubit is *measured*. The measurement axis is always vertical, and the result is indicated by a buzzer going "Beep beep beep!" for DOWN or "Riiiiiiiing!" for UP.
 - When you **press** two balls **together**, rotations become *controlled*. Turning one ball will only affect the parts of the state space where the other ball's qubit is UP.
 
-# Making Your Own
+### Making Your Own
 
 0. **Clone the repository.**
 
