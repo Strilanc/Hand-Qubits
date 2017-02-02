@@ -1,14 +1,31 @@
-# Hand Qubits
+# Handheld Qubits
 
 *Work in progress*
 
-The goal of this project is to make toy qubits that you can hold.
+This project contains code and instructions for making simulated toy qubits that you can hold.
 
-Each qubit will be a ball.
-To rotate a qubit, turn the ball.
-To measure a qubit, knock the ball against a surface.
-To interact two qubits, press them together and turn one.
-A nearby laptop talks to the qubits over bluetooth and handles the actual quantum simulation.
+The basic idea is to have a bunch of balls of Arduinos inside.
+The Arduinos record motion data and report it to a hub computer, which is doing the quantum simulation, over bluetooth.
+The basic actions of quantum computing (single-qubit operations, measurement, controlled operations) are mapped to movement of the balls (turning, knocking, and pressing together).
+
+The main things left to do are:
+
+- Better debugging and testing of the Arduino code. Something is causing the contact detection to go flaky when the Arduinos are reset.
+- Correcting gyrometer drift with accelerometer data.
+- Correctly turning the motion into quantum rotations.
+- Make a demo video demonstrating quantum teleportation.
+
+# Demo
+
+[[[work in progress]]]
+
+# Using
+
+- Each ball is a qubit.
+- A nearby computer acts as a hub handling the quantum simulation and talking to the balls over bluetooth.
+- When you **turn** a ball, its qubit is correspondingly *rotated* around the [Bloch sphere](https://en.wikipedia.org/wiki/Bloch_sphere).
+- When you **knock** a ball against a surface, its qubit is *measured*. The measurement axis is always vertical, and the result is indicated by a buzzer going "Beep beep beep!" for DOWN or "Riiiiiiiing!" for UP.
+- When you **press** two balls **together**, rotations become *controlled*. Turning one ball will only affect the parts of the state space where the other ball's qubit is UP.
 
 # Making
 
@@ -16,11 +33,11 @@ Inside each ball is a breadboard with an Arduino Uno, an MPU-6050 accelerometer/
 
 The balls are wrapped in copper tape so that, when they touch, the Arduinos inside each can talk to each other over the janky shared electrical connection.
 
-0. Clone the repository.
+0. **Clone the repository.**
 
     `git clone https://github.com/Strilanc/Hand-Qubits.git`
 
-0. Get the necessary parts.
+0. **Get the necessary parts.**
 
     - [ ] Arduino [Uno](https://www.arduino.cc/en/Main/ArduinoBoardUno) or [Nano](https://www.arduino.cc/en/Main/arduinoBoardNano) or similar
     - [ ] [MPU-6050](http://playground.arduino.cc/Main/MPU-6050) Accelerometer/Gyrometer ([datasheet](https://www.invensense.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf))
@@ -31,7 +48,7 @@ The balls are wrapped in copper tape so that, when they touch, the Arduinos insi
     - [ ] [Conductive Paint](https://www.amazon.com/Bare-Conductive-Electric-Paint-10ml/dp/B01IO2JSCG)
     - [ ] Breadboard / Various Wires / 9V Battery / Appropriate USB Cable / Soldering Stuff / Etc
 
-0. Configure parts.
+0. **Configure parts.**
 
     - Open `Hand-Qubits/qubit-microcontroller/qubit-microcontroller.ino` with the [Arduino IDE](https://www.arduino.cc/en/main/software)
 	- Upload to the Arduino
@@ -39,13 +56,13 @@ The balls are wrapped in copper tape so that, when they touch, the Arduinos insi
     - Change the addresses and pins in `Hand-Qubits/hub/src/config/KnownBoards.cs` to match.
     - Pair your computer with the Bluetooth modules.
 
-0. Run server.
+0. **Run the server.**
 
     - Open `Hand-Qubits/hub/HandQubitServer.sln` with [Visual Studio](https://www.visualstudio.com/vs/community/).
-    - Run the project.
-	- Once you've assembled things, the powered Arduinos can connect and start feeding in data.
+    - Run the project on a computer with bluetooth enabled.
+    - Once you've assembled things, the powered Arduinos can connect and start feeding in data.
 
-0. Assemble electronics.
+0. **Assemble electronics.**
 
     Connect `vcc` and `ground` pins appropriately.
     The MPU-6050's `SDA` and `SCL` pins go to `A5` and `A6` respectively.
@@ -60,7 +77,7 @@ The balls are wrapped in copper tape so that, when they touch, the Arduinos insi
 	
 	Once the electronics are ready, test that the powered Arduino connects and feeds motion data to the server.
 
-0. Assemble balls.
+0. **Assemble balls.**
 
     First, paint over the polystyrene ball with an acrlyic paint.
     This stops the polystyrene from shedding constantly when touched.
@@ -81,13 +98,4 @@ The balls are wrapped in copper tape so that, when they touch, the Arduinos insi
     Staples can be pulled out easily, if you need to make changes.
     If you want a more permanent connection, such as a hinge between the backs of the two halves, I recommend sewing them together with needle and thread.
 	
-0. Play with your qubits!
-
-# Current Progress
-
-The main things left to do are:
-
-1. Better debugging and testing of the Arduino code. Something is causing the contact detection to go flaky when the Arduinos are reset.
-2. Correcting gyrometer drift with accelerometer data.
-3. Correctly turning the motion into quantum rotations.
-4. Make a demo video demonstrating quantum teleportation.
+0. **Play with your qubits!**
