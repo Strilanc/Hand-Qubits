@@ -4,17 +4,22 @@
 #define WIRE_H
 
 #include <stdint.h>
+#include <deque>
 
 class WireClass {
 public:
-    static void begin();
-    static void setClock(long);
-    static void write(uint8_t v);
-    static void beginTransmission(int);
-    static void endTransmission();
-    static void requestFrom(int, int);
-    static int available();
-    static uint8_t read();
+    uint64_t requested = 0;
+    std::deque<uint8_t> written {};
+    std::deque<uint8_t> to_read {};
+
+    void begin();
+    void setClock(long);
+    void write(uint8_t v);
+    void beginTransmission(int dst);
+    void endTransmission();
+    void requestFrom(int src, int len);
+    int available();
+    uint8_t read();
 };
 
 extern WireClass Wire;

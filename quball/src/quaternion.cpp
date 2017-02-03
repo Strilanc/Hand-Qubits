@@ -3,7 +3,7 @@
 
 Quaternion Quaternion::from_angular_impulse(float wx, float wy, float wz) {
     float n = sqrtf(wx*wx + wy*wy + wz*wz);
-    if (n < 0.00001) {
+    if (n < 0.000001) {
         return Quaternion{ 1, 0, 0, 0 };
     }
     float hangle = n / 2;

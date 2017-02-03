@@ -4,14 +4,14 @@
 #define SOFTWARE_SERIAL_H
 
 #include <stdint.h>
-#include <vector>
+#include <deque>
 
 class SoftwareSerial {
 public:
     void write(uint8_t val);
     void write(uint8_t* buf, int len);
 
-    std::vector<uint8_t> testing_written;
+    std::deque<uint8_t> test_harness_written;
 };
 
 #endif

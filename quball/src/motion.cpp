@@ -12,24 +12,42 @@ struct vec3 {
     float z;
 };
 
-static uint64_t last_gyro_read_time = 0;
-static vec3 bias{ 0, 0, 0 };
-static float gyration = 0;
-static int calibration_readings = 0;
-static Quaternion pose{ 1, 0, 0, 0 };
-static vec3 accel{ 0, 0, 0 };
-static int accumulate_count = 0;
+#define mpuAddress 0b1101000
+#define ACCEL_SCALE_FACTOR ((float)(1.0 / 16.0 / 256.0 / 128.0))
+#define GYRO_TIME_SCALE_FACTOR ((float)(3.14159265358979323846f / 180 / 1000 / 256 / 128))
+
+static uint64_t last_gyro_read_time;
+static vec3 bias;
+static float gyration;
+static int calibration_readings;
+static Quaternion pose;
+static vec3 accel;
+static int accumulate_count;
 static float bumpiness;
+static int request_state;
+static int request_state_buf[6];
 
 void setupMPU();
 
+void motion_reset() {
+    request_state = 0;
+    last_gyro_read_time = 0;
+    bias = { 0, 0, 0 };
+    gyration = 0;
+    calibration_readings = 0;
+    pose = { 1, 0, 0, 0 };
+    accel = { 0, 0, 0 };
+    accumulate_count = 0;
+    bumpiness = 0;
+}
+
 void motion_setup() {
+    motion_reset();
+
     Wire.begin();
     Wire.setClock(400000L); // max supported by MPU-6050
     setupMPU();
 }
-
-int mpuAddress = 0b1101000;
 
 void mpuSendPair(int a, int b) {
     Wire.beginTransmission(mpuAddress);
@@ -56,39 +74,50 @@ void setupMPU() {
     mpuSendPair(0x1C, 0x18);
 }
 
-void mpuRequest(int reg, int len, int* dst) {
-    Wire.beginTransmission(mpuAddress);
-    Wire.write(reg);
-    Wire.endTransmission();
+bool mpuTryMotionRequest(vec3& accel, vec3& gyro) {
+    switch (request_state) {
+    case 0:
+        // Request accelerometer data.
+        Wire.beginTransmission(mpuAddress);
+        Wire.write(0x3B);
+        Wire.endTransmission();
+        Wire.requestFrom(mpuAddress, 6);
+        request_state = 1;
+    case 1:
+        if (Wire.available() < 6) {
+            return false;
+        }
+        for (int i = 0; i < 3; i++) {
+            request_state_buf[i] = Wire.read() << 8;
+            request_state_buf[i] |= Wire.read();
+        }
+        request_state = 2;
+    case 2:
+        // Request gyrometer data.
+        Wire.beginTransmission(mpuAddress);
+        Wire.write(0x43);
+        Wire.endTransmission();
+        Wire.requestFrom(mpuAddress, 6);
+        request_state = 3;
+    default:
+        if (Wire.available() < 6) {
+            return false;
+        }
+        for (int i = 0; i < 3; i++) {
+            request_state_buf[i+3] = Wire.read() << 8;
+            request_state_buf[i+3] |= Wire.read();
+        }
 
-    Wire.requestFrom(mpuAddress, len * 2);
-    while (Wire.available() < len * 2) {
-        // wait
+        // Dump into values.
+        accel.x = (float)request_state_buf[0] * ACCEL_SCALE_FACTOR;
+        accel.y = (float)request_state_buf[1] * ACCEL_SCALE_FACTOR;
+        accel.z = (float)request_state_buf[2] * ACCEL_SCALE_FACTOR;
+        gyro.x = (float)request_state_buf[3];
+        gyro.y = (float)request_state_buf[4];
+        gyro.z = (float)request_state_buf[5];
+        request_state = 0;
+        return true;
     }
-    for (int i = 0; i < len; i++) {
-        dst[i] = Wire.read() << 8;
-        dst[i] |= Wire.read();
-    }
-}
-
-struct vec3 mpuRequestAccel() {
-    int buf[3];
-    mpuRequest(0x3B, 3, buf);
-    struct vec3 r;
-    r.x = (float)buf[0];
-    r.y = (float)buf[1];
-    r.z = (float)buf[2];
-    return r;
-}
-
-struct vec3 recordGyroRegisters() {
-    int buf[3];
-    mpuRequest(0x43, 3, buf);
-    struct vec3 r;
-    r.x = (float)buf[0];
-    r.y = (float)buf[1];
-    r.z = (float)buf[2];
-    return r;
 }
 
 void serialWriteInt(int s) {
@@ -110,10 +139,7 @@ void serialWriteQuaternion(Quaternion q) {
     serialWriteFloat(q.z);
 }
 
-Quaternion readNextGyroQuaternion() {
-    // Grab angular velocities.
-    vec3 v = recordGyroRegisters();
-
+Quaternion angularVelocitiesToQuaternion(vec3 v) {
     // If still early, build up average to calibrate zero bias.
     float g = v.x*v.x + v.y*v.y + v.z*v.z;
     gyration = gyration * 0.9f + g * 0.1f;
@@ -140,17 +166,8 @@ Quaternion readNextGyroQuaternion() {
     last_gyro_read_time = t;
 
     // Estimated rotation over sample duration.
-    float dw = dt * 3.14159265358979323846f / 180 / 1000 / 256 / 128;
+    float dw = dt * GYRO_TIME_SCALE_FACTOR;
     return Quaternion::from_angular_impulse(v.x * dw, v.y * dw, v.z * dw);
-}
-
-vec3 readNextAccel() {
-    vec3 v = mpuRequestAccel();
-    float f = 16.0 / 256.0 / 128.0;
-    v.x *= f;
-    v.y *= f;
-    v.z *= f;
-    return v;
 }
 
 void send_accumulated_motion_and_reset() {
@@ -170,20 +187,24 @@ void send_accumulated_motion_and_reset() {
 }
 
 void motion_loop() {
+    vec3 acc, gyr;
+    if (!mpuTryMotionRequest(acc, gyr)) {
+        return;
+    }
+
     // Sending motion data constantly is too expensive. Build it up for 100 loops before doing that.
+    accumulate_count++;
     if (accumulate_count >= 100) {
         send_accumulated_motion_and_reset();
         accumulate_count = 0;
     }
-    accumulate_count++;
 
     // Accumulate rotations.
-    pose = pose * readNextGyroQuaternion();
+    pose = pose * angularVelocitiesToQuaternion(gyr);
 
     // Accumulate estimate of whether we're slamming into a table or not.
-    vec3 v = readNextAccel();
-    accel.x += v.x;
-    accel.y += v.y;
-    accel.z += v.z;
-    bumpiness += v.x*v.x + v.y*v.y + v.z*v.z;
+    accel.x += acc.x;
+    accel.y += acc.y;
+    accel.z += acc.z;
+    bumpiness += acc.x*acc.x + acc.y*acc.y + acc.z*acc.z;
 }

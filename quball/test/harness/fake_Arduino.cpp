@@ -1,4 +1,5 @@
 #include "ArduinoTestHarness.h"
+#include "Wire.h"
 #include <functional>
 #include <map>
 #include <queue>
@@ -53,6 +54,9 @@ void test_harness_reset_arduino_state() {
     callbacks = {};
     pins = {};
     elapsed_micros = 0;
+    Wire.to_read.clear();
+    Wire.written.clear();
+    Wire.requested = 0;
 }
 
 Pin test_harness_get_pin(int pin) {
