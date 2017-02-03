@@ -6,6 +6,8 @@
 #include "Arduino.h"
 #include <functional>
 
+#define PIN_MODE_NOT_SET 0
+
 class Pin {
 public:
     int value;
