@@ -1,19 +1,52 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <vector>
 #include "TestUtils.h"
 #include "ArduinoTestHarness.h"
 #include "contact.h"
 
+void tick() {
+    test_harness_advance_time(512);
+}
+
+void tick_until(std::function<bool(void)> predicate) {
+    for (int i = 0; i < 10000 && !predicate(); i++) {
+        tick();
+    }
+    assert(predicate());
+};
+
+// A manchester-encoded message.
+static std::vector<int> msg42 {
+    0, 0, 1, 1, // Pad.
+    0, 0, 1, 1, // Magic.
+    0, 0, 1, 1,
+    1, 1, 0, 0,
+    1, 1, 0, 0,
+    1, 1, 0, 0,
+    0, 0, 1, 1,
+    1, 1, 0, 0,
+    0, 0, 1, 1,
+    1, 1, 0, 0, // Payload.
+    0, 0, 1, 1,
+    1, 1, 0, 0,
+    0, 0, 1, 1,
+    1, 1, 0, 0,
+    0, 0, 1, 1,
+    1, 1, 0, 0,
+    1, 1, 0, 0,
+    0, 0, 1, 1, // Check byte.
+    0, 0, 1, 1,
+    0, 0, 1, 1,
+    1, 1, 0, 0,
+    0, 0, 1, 1,
+    1, 1, 0, 0,
+    1, 1, 0, 0,
+    0, 0, 1, 1
+};
+
 void contact_main() {
     test("contact_test", []() {
-        auto tick = []() {test_harness_advance_time(512); };
-        auto tick_until = [&](std::function<bool(void)> predicate) {
-            for (int i = 0; i < 10000 && !predicate(); i++) {
-                tick();
-            }
-            assert(predicate());
-        };
-
         contact_setup();
 
         // Setup.
@@ -32,35 +65,8 @@ void contact_main() {
         tick_until([]() { return test_harness_get_pin(A0).mode == OUTPUT; });
         assert(contact_get_current_other_message() == 0xFF);
 
-        // Sends a manchester-encoded message representing the desired payload.
-        std::vector<int> msg{
-            0, 0, 1, 1, // Pad.
-            0, 0, 1, 1, // Magic.
-            0, 0, 1, 1,
-            1, 1, 0, 0,
-            1, 1, 0, 0,
-            1, 1, 0, 0,
-            0, 0, 1, 1,
-            1, 1, 0, 0,
-            0, 0, 1, 1,
-            1, 1, 0, 0, // Payload.
-            0, 0, 1, 1,
-            1, 1, 0, 0,
-            0, 0, 1, 1,
-            1, 1, 0, 0,
-            0, 0, 1, 1,
-            1, 1, 0, 0,
-            1, 1, 0, 0,
-            0, 0, 1, 1, // Check byte.
-            0, 0, 1, 1,
-            0, 0, 1, 1,
-            1, 1, 0, 0,
-            0, 0, 1, 1,
-            1, 1, 0, 0,
-            1, 1, 0, 0,
-            0, 0, 1, 1
-        };
-        for (int b : msg) {
+        // Sends a properly encoded message representing the desired payload.
+        for (int b : msg42) {
             bool is_on = test_harness_get_pin(A0).value > 512;
             bool expect_on = b == 0;
             assert(test_harness_get_pin(A0).mode == OUTPUT);
@@ -77,7 +83,7 @@ void contact_main() {
         tick();
         tick();
         tick();
-        for (int b : msg) {
+        for (int b : msg42) {
             test_harness_set_pin(A0, b == 0);
             tick();
         }
@@ -97,6 +103,34 @@ void contact_main() {
         assert(contact_get_current_other_message() == 42);
         tick_until([]() { return test_harness_get_pin(A0).mode == OUTPUT; });
         assert(contact_get_current_other_message() == 0xFF);
+    });
+
+    test_without_reset("contact_fuzz", []() {
+        for (int i = 0; i < 10000; i++) {
+            if (test_harness_get_pin(A0).mode == INPUT) {
+                test_harness_set_pin(A0, rand() % 1024);
+            }
+            tick();
+        }
+        
+        // Still transitioning.
+        tick_until([]() { return test_harness_get_pin(A0).mode == INPUT; });
+        tick_until([]() { return test_harness_get_pin(A0).mode == OUTPUT; });
+    });
+
+    test_without_reset("contact_fuzz_manchester", []() {
+        bool sending = false;
+        for (int i = 0; i < 10000; i++) {
+            if (test_harness_get_pin(A0).mode == INPUT && (i & 3) == 0) {
+                sending = (rand() & 1) != 0;
+            }
+            test_harness_set_pin(A0, ((i & 2) != 0) ^ sending);
+            tick();
+        }
+
+        // Still transitioning.
+        tick_until([]() { return test_harness_get_pin(A0).mode == INPUT; });
+        tick_until([]() { return test_harness_get_pin(A0).mode == OUTPUT; });
     });
 
     printf("CONTACT PASS\n");

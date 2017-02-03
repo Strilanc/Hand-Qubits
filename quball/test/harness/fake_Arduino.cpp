@@ -63,6 +63,10 @@ void test_harness_set_pin(int pin, bool val) {
     pins[pin].value = val ? 1023 : 0;
 }
 
+void test_harness_set_pin(int pin, int val) {
+    pins[pin].value = val;
+}
+
 void test_harness_advance_time(uint32_t micros) {
     auto t = elapsed_micros + micros;
     while (!callbacks.empty() && callbacks.top().time <= t) {

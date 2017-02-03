@@ -20,6 +20,12 @@ int main() {
 	return 0;
 }
 
+void test_without_reset(std::string name, void(*func)(void)) {
+    cur_assert = 0;
+    cur_name = name;
+    func();
+}
+
 void test(std::string name, void(*func)(void)) {
     test_harness_reset_arduino_state();
     cur_assert = 0;

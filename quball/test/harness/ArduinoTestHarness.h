@@ -17,6 +17,7 @@ public:
 void test_harness_reset_arduino_state();
 Pin test_harness_get_pin(int pin);
 void test_harness_set_pin(int pin, bool val);
+void test_harness_set_pin(int pin, int val);
 void test_harness_advance_time(uint32_t micros);
 void test_harness_delayed_callback(uint32_t simulated_delay_micros, std::function<void(void)> callback);
 

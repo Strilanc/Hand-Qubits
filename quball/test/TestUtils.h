@@ -4,6 +4,7 @@
 #include <string>
 
 void test(std::string name, void(*func)(void));
+void test_without_reset(std::string name, void(*func)(void));
 void assert(bool truth);
 
 #endif // TEST_UTILS_H
