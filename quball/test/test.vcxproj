@@ -11,6 +11,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>test</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>TestQuball</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|Win32'" Label="Configuration">
@@ -55,14 +56,14 @@
     <ClCompile Include="..\src\motion.cpp" />
     <ClCompile Include="..\src\quaternion.cpp" />
     <ClCompile Include="..\src\sound.cpp" />
-    <ClCompile Include="common.h" />
+    <ClCompile Include="TestUtils.h" />
     <ClCompile Include="harness\fake_Arduino.cpp" />
     <ClCompile Include="harness\fake_hardware_timer_1.cpp" />
     <ClCompile Include="harness\fake_SoftwareSerial.cpp" />
     <ClCompile Include="harness\fake_Wire.cpp" />
     <ClCompile Include="test_contact.cpp" />
     <ClCompile Include="test.cpp" />
-    <ClCompile Include="test_coder.cpp" />
+    <ClCompile Include="test_harness.cpp" />
     <ClCompile Include="test_motion.cpp" />
     <ClCompile Include="test_quaternion.cpp" />
   </ItemGroup>
@@ -75,6 +76,7 @@
     <ClInclude Include="..\src\quaternion.h" />
     <ClInclude Include="..\src\sound.h" />
     <ClInclude Include="harness\Arduino.h" />
+    <ClInclude Include="harness\ArduinoTestHarness.h" />
     <ClInclude Include="harness\SoftwareSerial.h" />
     <ClInclude Include="harness\Wire.h" />
   </ItemGroup>

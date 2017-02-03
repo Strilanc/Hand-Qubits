@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "common.h"
+#include "TestUtils.h"
 #include "quaternion.h"
 #define PI 3.14159265358979323846f
 

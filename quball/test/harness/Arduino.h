@@ -3,6 +3,8 @@
 #ifndef ARDUINO_H
 #define ARDUINO_H
 
+#include <cinttypes>
+
 #define OUTPUT 101
 #define INPUT 102
 #define INPUT_PULLUP 103
@@ -26,9 +28,10 @@
 void pinMode(int pin, int mode);
 void digitalWrite(int pin, bool val);
 int random(int min_inclusive, int max_exclusive);
+bool digitalRead(int pin);
 int analogRead(int pin);
-unsigned long millis();
-unsigned long long micros();
+uint32_t millis();
+uint32_t micros();
 
 template<typename T>
 T max(T left, T right) {

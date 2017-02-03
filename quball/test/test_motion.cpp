@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "common.h"
+#include "TestUtils.h"
 #include "motion.h"
 
 SoftwareSerial bluetoothSerial;

@@ -1,9 +1,9 @@
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef TEST_UTILS_H
+#define TEST_UTILS_H
 
 #include <string>
 
 void test(std::string name, void(*func)(void));
 void assert(bool truth);
 
-#endif // COMMON_H
+#endif // TEST_UTILS_H
