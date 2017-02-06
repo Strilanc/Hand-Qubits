@@ -176,7 +176,7 @@
                         <Model3DGroup>
                             <GeometryModel3D Geometry="{Binding Source={StaticResource Teapot}, Path=Geometry}">
                                 <GeometryModel3D.Material>
-                                    <DiffuseMaterial Brush="Red"/>
+                                    <DiffuseMaterial Brush="Gray"/>
                                 </GeometryModel3D.Material>
                                 <GeometryModel3D.Transform>
                                     <Transform3DGroup>
@@ -215,7 +215,7 @@
                             </GeometryModel3D>
                             <GeometryModel3D Geometry="{Binding Source={StaticResource SphereGenerator}, Path=Geometry}">
                                 <GeometryModel3D.Material>
-                                    <DiffuseMaterial Brush="#A0FF0000"/>
+                                    <DiffuseMaterial Brush="#A0FFFFFF"/>
                                 </GeometryModel3D.Material>
                             </GeometryModel3D>
                             
@@ -249,7 +249,7 @@
                         <Model3DGroup>
                             <GeometryModel3D Geometry="{Binding Source={StaticResource Teapot}, Path=Geometry}">
                                 <GeometryModel3D.Material>
-                                    <DiffuseMaterial Brush="Yellow"/>
+                                    <DiffuseMaterial Brush="Red"/>
                                 </GeometryModel3D.Material>
                                 <GeometryModel3D.Transform>
                                     <Transform3DGroup>
@@ -266,7 +266,7 @@
         							TriangleIndices="2 3 1  2 1 0  7 1 3  7 5 1  6 5 7  6 4 5  6 2 0  2 0 4  2 7 3  2 6 7  0 1 5  0 5 4  0 4 6"/>
                                 </GeometryModel3D.Geometry>
                                 <GeometryModel3D.Material>
-                                    <DiffuseMaterial Brush="Green"/>
+                                    <DiffuseMaterial Brush="Red"/>
                                 </GeometryModel3D.Material>
                                 <GeometryModel3D.Transform>
                                     <Transform3DGroup>
@@ -288,7 +288,7 @@
                             </GeometryModel3D>
                             <GeometryModel3D Geometry="{Binding Source={StaticResource SphereGenerator}, Path=Geometry}">
                                 <GeometryModel3D.Material>
-                                    <DiffuseMaterial Brush="#A0FFFF00"/>
+                                    <DiffuseMaterial Brush="#A0FF0000"/>
                                 </GeometryModel3D.Material>
                             </GeometryModel3D>
 
@@ -395,7 +395,7 @@
                         <Model3DGroup>
                             <GeometryModel3D Geometry="{Binding Source={StaticResource Teapot}, Path=Geometry}">
                                 <GeometryModel3D.Material>
-                                    <DiffuseMaterial Brush="#88F"/>
+                                    <DiffuseMaterial Brush="Yellow"/>
                                 </GeometryModel3D.Material>
                                 <GeometryModel3D.Transform>
                                     <Transform3DGroup>
@@ -434,7 +434,7 @@
                             </GeometryModel3D>
                             <GeometryModel3D Geometry="{Binding Source={StaticResource SphereGenerator}, Path=Geometry}">
                                 <GeometryModel3D.Material>
-                                    <DiffuseMaterial Brush="#A08080FF"/>
+                                    <DiffuseMaterial Brush="#A0FFFF00"/>
                                 </GeometryModel3D.Material>
                             </GeometryModel3D>
 
