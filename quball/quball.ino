@@ -32,11 +32,15 @@ void loop() {
 }
 
 void read_any_commands_from_serial() {
+  uint8_t id;
   while (bluetoothSerial.available() > 0) {
     switch (bluetoothSerial.read()) {
       case 'm':
-        // Message.
-        contact_set_byte_to_send(bluetoothSerial.read());
+        // Set id.
+        while (bluetoothSerial.available() < 1) {
+        }
+        id = bluetoothSerial.read();
+        contact_set_byte_to_send(id);
         break;
         
       case 'r':
